@@ -1,7 +1,9 @@
-# IOC
+# IOC identified by Matrix
 
-The purpose of this repository is to share threat indicators. The kits from which these indicators are extracted are taken over by the [Matrix project](https://matrixproject.info/). 
+This repository collects some of the indicators identified within kits detected by the [Matrix project](https://matrixproject.info/). 
 
-In the future, hopefully in the near future, the publication of these indicators will be automated, now it is manual.
+For now the extraction of indicators is manual, so, in my spare time, I dedicate myself to updating these files to share useful information to the community. 
 
-Anyone who wishes to collaborate can do so. If you want to become a collaborator of the project you are welcome :)
+If you want to contribute, of course, you are welcome.
+
+The kits listed are all available in the Matrix storage. If you are a researcher and need any of these kits for analysis you can write to me and I will send you the instructions to download it.
