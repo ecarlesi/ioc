@@ -142,3 +142,5 @@ smibsalm@gmail.com,http://verifylogonauth.help/usaahammer.zip
 wccgarcia19@zohomail.eu,http://verifylogonauth.help/usaahammer.zip
 lloydlov20@gmail.com,https://esl-org-alert1.xyz/esl.zip
 porkleed@yahoo.com,https://esl-org-alert1.xyz/esl.zip
+porkleed@yahoo.com,https://esl-org-transaction1.sbs/esl.zip
+lloydlov20@gmail.com,https://esl-org-transaction1.sbs/esl.zip
