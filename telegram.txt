@@ -194,4 +194,5 @@
 7031335951:AAEkD8oh7uiYOEP8V1tu3rpFNADhkwnb9Dg,https://estekhdam.info/employment.zip
 7031335951:AAEkD8oh7uiYOEP8V1tu3rpFNADhkwnb9Dg,https://estekhdam.xyz/employment.zip
 7594833140:AAECOhqQ0rKCtaHe79jkgER_RpbIRSBDhs0,https://telstraa.payment-secure.170-64-181-97.cprapid.com/dblpymnt.zip
+7594833140:AAECOhqQ0rKCtaHe79jkgER_RpbIRSBDhs0,https://signin-account.tlstrsa.50-6-200-28.cprapid.com/dblpymnt.zip
 
