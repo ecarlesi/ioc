@@ -222,4 +222,12 @@
 7594833140:AAECOhqQ0rKCtaHe79jkgER_RpbIRSBDhs0,https://signin-tlstrsaaccounts.107-175-75-42.cprapid.com/dblpymnt.zip
 7632121856:AAFM-s6ghF5LS2udigVKzET4PeZn64wjQ-8,http://formld.biz.id/Konfirmasi-aktivasi-Paylater.zip
 8071521112:AAHfx0YOqR_TQnhGf3ABjLSwJpJ7NWTMIrI,http://gbyr-brhdh.my.id/bca.zip
+<<<<<<< HEAD
 7506461989:AAE6AV3O2Wd9t-Jdve39h5_O6wE3i_KLGVw,http://web-memberntfnid-secure.kiloasmelspas.cloud/EZPASS%20(3).zip
+=======
+7035186172:AAG_Kpjdlgu1Jo4E2OmzIkp7SxTNycw32Rg,https://kraken-callback.com/KRAKENFINAL.zip
+7011806701:AAECqtMFikTm6tcpY5V1_QalJLCIWGmwF8M,https://ledger-activeren-be.com/ledger-choosedevice1.0-antibot.zip
+7542376712:AAFw1eRt6Jbg2-XxDTuH5LOTprtSQLZoCQY,https://konto-medfile.online/medfile.zip
+8032815509:AAHL8_3M3LPsA02xQD9Fu3dD_Ja2qQ8kpYw,https://carapemulihanakundana.my.id/
+5319912291:AAHtFDyAC7rzxhSmY6iBelMZaVbW1UNX6d4,https://szecccv.com/Scriptss.zip
+>>>>>>> 843042f2befd5d5a9e9b4d076ee761f29029afba
