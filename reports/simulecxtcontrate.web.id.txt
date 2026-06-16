@@ -1,0 +1,386 @@
+# IoC Report — Phishing Kit Analysis
+**Date:** 2026-06-16  
+**Kits analysed:** `scam2baru`, `shortkontil`  
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Kit 1 — `scam2baru` (Xfinity credential/CC harvester)
+
+### Description
+Multi-stage phishing kit impersonating Xfinity. Collects login credentials, billing data, and full credit-card details (including double-card trick). Uses the **Gobot.su** bot-filtering service. Exfiltrates data via PHP `mail()`.
+
+---
+
+### Email Addresses
+
+| Value | Role |
+|-------|------|
+| `freeusers2121@hotmail.com` | Recipient of all harvested data (configured in `config.php`) |
+| `batak@gobot.com` | Spoofed "From" address in all exfiltration emails |
+
+---
+
+### Credentials / Secrets
+
+| Type | Value | Source |
+|------|-------|--------|
+| Admin username | `babilah` | `storage/admin_auth.php` |
+| Admin password (plaintext) | `holong23` | `storage/admin_auth.php` |
+| Admin panel access param | `kuy` (GET/POST param name) | `config.php` |
+| Admin panel access secret | `babilah321` | `config.php` |
+| Gobot API key | `7b1d2a9ae6e279ef93a4a428db08f03c` | `config.php`, `system/Gobot/blocker.php` |
+
+---
+
+### Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| URL | `https://gobot.su/api/v1/blocker` | Bot-filtering API called by both kits |
+| URL | `https://api.ipapi.is/?q={ip}` | GeoIP lookup |
+| URL | `http://ip-api.com/json/{ip}?fields=...` | GeoIP lookup (fallback) |
+| URL | `https://ipinfo.io/{ip}/json` | GeoIP lookup (fallback) |
+
+---
+
+### URL Parameters (entry/tracking)
+
+| Parameter | Value / Role |
+|-----------|-------------|
+| `thai` | Entry gate parameter (must be present in URL to serve phishing page) |
+| `reff` | Required referral/tracking parameter appended to all pages |
+| `kuy=babilah321` | Admin panel access |
+
+---
+
+### Hardcoded IP (developer localhost fallback)
+
+| IP | Note |
+|----|------|
+| `180.243.254.180` | Used when `SERVER_NAME` is localhost; likely the actor's real or VPS IP |
+
+---
+
+### Bot IP Blocklist (`scam2baru/ipbot.txt`) — 64 entries
+
+```
+149.88.103.79
+185.135.77.63
+185.18.222.147
+37.159.92.223
+80.45.224.214
+18.130.61.231
+203.57.115.146
+128.90.0.200
+74.179.70.65
+70.125.22.125
+128.90.0.86
+128.90.0.115
+24.220.112.166
+37.159.20.86
+173.168.163.250
+63.117.14.136
+35.140.168.152
+209.141.121.196
+72.187.130.39
+72.56.178.1
+174.253.121.93
+97.234.169.240
+66.188.163.180
+65.32.58.168
+173.170.209.37
+24.176.136.157
+128.90.0.80
+45.50.45.136
+174.84.73.113
+47.41.183.108
+128.90.0.151
+174.242.64.2
+74.78.60.152
+71.9.106.143
+24.205.3.78
+128.90.0.38
+155.2.216.16
+104.159.150.124
+74.77.167.66
+68.114.66.132
+66.169.40.4
+96.33.92.116
+209.236.83.174
+172.222.53.192
+128.90.0.232
+128.90.0.197
+65.32.133.92
+128.90.0.72
+109.248.147.75
+187.190.192.152
+72.153.230.168
+37.159.30.53
+104.137.117.250
+107.9.161.193
+131.93.241.221
+23.87.172.41
+71.12.222.21
+24.171.35.165
+128.90.0.146
+35.132.140.187
+24.181.236.143
+128.90.0.92
+135.136.27.42
+103.12.54.45
+106.161.65.206
+```
+
+---
+
+### Geo Cache — IPs That Probed the Kit (`storage/geo_cache.json`)
+
+These IPs contacted the live phishing server (timestamp ~2026-05-08):
+
+| IP | Country | City | ISP |
+|----|---------|------|-----|
+| `173.169.18.211` | US | Tampa, FL | Charter Communications |
+| `45.80.158.165` | PL | Warsaw | 1337 Services GmbH |
+| `66.132.195.82` | US | Ann Arbor, MI | Censys, Inc. |
+| `173.169.162.244` | US | Winter Haven, FL | Charter Communications |
+| `20.239.192.136` | HK | Hong Kong | Microsoft Corporation |
+| `66.132.195.116` | US | Ann Arbor, MI | Censys, Inc. |
+
+---
+
+### Behaviour / TTPs
+
+- **Brand impersonated:** Xfinity (Comcast)
+- **Attack flow:** Sign-in → Billing → Credit Card → Security verification
+- **Double-card trick:** First card submission returns "declined"; victim enters a second card. Both cards are collected.
+- **Exfiltration channel:** PHP `mail()` to `freeusers2121@hotmail.com`
+- **Bot evasion:** Gobot.su API + User-Agent blocklist + local IP cache (`ipbot.txt`)
+- **GeoIP fingerprinting:** ipapi.is / ip-api.com / ipinfo.io
+- **Admin panel:** protected by GET param `kuy=babilah321`; credentials `babilah` / `holong23`
+
+---
+
+---
+
+## Kit 2 — `shortkontil` (URL shortener / redirect gate)
+
+### Description
+Minimal PHP redirect gate. Acts as a cloaked intermediary: legitimate visitors are redirected to a configurable URL (stored in `url.txt`); bots are sent to `127.0.0.1`. Uses the same **Gobot.su** API key as `scam2baru`.
+
+---
+
+### Credentials / Secrets
+
+| Type | Value | Source |
+|------|-------|--------|
+| Admin panel password (plaintext) | `sayangdia12` | `index.php` (hardcoded) |
+| Gobot API key | `7b1d2a9ae6e279ef93a4a428db08f03c` | `config.json` |
+
+> **Note:** The Gobot API key is **identical** across both kits, strongly suggesting a single threat actor.
+
+---
+
+### Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| URL | `https://gobot.su/api/v1/blocker` | Bot-filtering API |
+
+---
+
+### Bot IP Blocklist (`shortkontil/ipbot.txt`) — 155 entries (selection)
+
+```
+119.249.100.235
+220.181.51.92
+202.46.62.41
+202.46.62.91
+57.141.20.18
+43.166.132.142
+20.46.112.144
+69.171.231.9
+154.28.229.67
+104.164.173.6
+104.252.191.108
+57.141.20.45
+43.131.23.154
+57.141.20.21
+17.246.19.51
+114.119.157.118
+17.246.19.160
+57.141.20.51
+57.141.20.31
+57.141.20.37
+47.128.115.112
+57.141.20.28
+57.141.20.44
+57.141.20.2
+57.141.20.30
+57.141.20.16
+57.141.20.47
+57.141.20.61
+47.128.114.97
+57.141.20.60
+43.159.145.149
+47.128.114.75
+43.133.69.37
+207.154.212.47
+165.22.235.3
+207.154.197.113
+139.59.132.8
+147.182.149.75
+167.172.158.128
+68.183.9.16
+206.189.19.19
+146.190.103.103
+46.101.1.225
+64.23.218.208
+167.71.81.114
+157.245.105.107
+164.90.228.79
+146.190.63.248
+51.81.245.138
+107.172.195.51
+209.38.248.17
+178.128.207.138
+154.28.229.17
+104.164.126.32
+107.172.195.144
+103.4.251.104
+104.164.173.213
+104.164.126.49
+154.28.229.18
+205.169.39.19
+65.108.99.124
+91.231.89.121
+91.231.89.38
+91.231.89.37
+91.231.89.126
+87.106.161.31
+114.119.140.13
+43.128.67.187
+45.88.138.44
+193.70.46.38
+144.76.32.190
+104.164.126.16
+104.164.126.64
+45.185.226.168
+83.229.54.244
+103.4.250.90
+81.29.142.6
+114.119.150.190
+74.7.244.41
+104.252.191.170
+107.172.195.26
+154.28.229.107
+119.249.100.177
+119.249.100.237
+202.46.62.42
+202.46.62.45
+111.230.233.46
+91.231.89.19
+109.70.100.13
+109.176.47.193
+66.249.72.193
+66.249.76.104
+66.249.76.103
+37.228.129.241
+45.92.84.216
+45.92.87.31
+114.119.135.193
+45.92.84.203
+45.92.86.194
+111.225.149.173
+34.150.225.31
+52.12.96.188
+45.141.215.114
+45.154.98.153
+93.159.230.84
+77.74.177.114
+93.159.230.85
+43.159.136.201
+18.196.102.94
+43.134.232.52
+105.158.152.71
+18.196.214.250
+80.94.92.53
+34.220.34.85
+45.148.10.62
+64.23.135.170
+137.184.31.214
+181.233.125.72
+120.240.178.239
+157.55.39.225
+54.213.161.240
+178.128.68.2
+52.167.144.206
+23.27.145.102
+8.231.150.7
+20.29.119.89
+45.148.10.120
+43.157.20.63
+34.223.114.87
+35.201.190.155
+146.112.163.53
+146.112.163.33
+34.87.15.132
+101.42.46.71
+15.165.32.0
+170.106.165.76
+39.173.116.8
+51.68.111.238
+172.232.7.86
+194.230.160.48
+20.44.177.173
+216.73.217.145
+79.192.169.191
+66.249.70.1
+104.28.208.60
+46.203.116.189
+85.11.167.19
+82.41.83.18
+103.72.8.28
+185.213.175.121
+```
+
+---
+
+### Behaviour / TTPs
+
+- **Role:** Cloaked redirect gate / URL shortener for phishing campaigns
+- **Bot evasion:** Same Gobot.su API + local `ipbot.txt` cache
+- **Admin authentication:** Single hardcoded plaintext password `sayangdia12` via POST `login_password`
+- **Redirect target:** Stored in `url.txt` (empty at time of analysis — operator sets it via the admin panel)
+- **Subdomain blocking:** Deflects mail/cpanel/webmail subdomains to `127.0.0.1`
+
+---
+
+---
+
+## Cross-Kit Correlation
+
+| Indicator | scam2baru | shortkontil | Conclusion |
+|-----------|-----------|-------------|------------|
+| Gobot API key `7b1d2a9ae6e279ef93a4a428db08f03c` | ✓ | ✓ | **Same actor** |
+| Gobot.su API endpoint | ✓ | ✓ | Shared infrastructure |
+| `ipbot.txt` local cache | ✓ | ✓ | Shared kit template |
+| Indonesian language strings in code | ✓ | ✓ | Actor likely Indonesian-speaking |
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID | Notes |
+|-----------|-----|-------|
+| Phishing: Spearphishing Link | T1566.002 | scam2baru distributes phishing links |
+| Credential Harvesting | T1056 | Login credentials stolen via fake Xfinity portal |
+| Financial Data Theft | T1041 | Credit card + billing data exfiltrated |
+| Obfuscated Files or Information | T1027 | Entry token gate (`?thai`), admin param (`?kuy=babilah321`) |
+| Bot/Sandbox Evasion | T1497 | Gobot.su API, UA blocklist, local IP cache |
+| Exfiltration Over Web Service | T1567 | Data sent via `mail()` to actor-controlled email |
+| Proxy / Redirector | T1090 | `shortkontil` acts as cloaked redirect gate |
+
+---
+
+*Report generated from static analysis of kit source files. No live systems were contacted during analysis.*
