@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IOC Explorer — Matrix Project</title>
+<script src="assets/d3.v7.min.js"></script>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9;
+    --muted:#8b949e; --accent:#58a6ff; --accent2:#f78166; --good:#3fb950;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);}
+  header{padding:14px 20px;border-bottom:1px solid var(--border);
+         display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  header h1{font-size:18px;margin:0;color:var(--text);}
+  header .sub{color:var(--muted);font-size:12px;}
+  #search{flex:1;min-width:220px;padding:8px 10px;background:var(--panel);
+          border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:14px;}
+  #layout{display:flex;height:calc(100vh - 58px);}
+  #sidebar{width:230px;border-right:1px solid var(--border);overflow-y:auto;padding:10px;}
+  #sidebar h3{font-size:11px;text-transform:uppercase;color:var(--muted);
+              margin:14px 0 6px 4px;letter-spacing:.05em;}
+  #categoryList label{display:flex;align-items:center;gap:6px;padding:4px 6px;
+                       border-radius:6px;font-size:13px;cursor:pointer;}
+  #categoryList label:hover{background:var(--panel);}
+  #categoryList .count{margin-left:auto;color:var(--muted);font-size:11px;}
+  .swatch{width:10px;height:10px;border-radius:50%;flex:none;}
+  #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  #stats{padding:8px 16px;border-bottom:1px solid var(--border);font-size:12px;
+         color:var(--muted);display:flex;gap:18px;}
+  #stats b{color:var(--text);}
+  #tabs{display:flex;border-bottom:1px solid var(--border);}
+  #tabs button{background:none;border:none;color:var(--muted);padding:10px 16px;
+               cursor:pointer;font-size:13px;border-bottom:2px solid transparent;}
+  #tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+  #viewGraph, #viewTable{flex:1;overflow:auto;position:relative;}
+  #viewTable{display:none;padding:0;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{position:sticky;top:0;background:var(--panel);text-align:left;
+           padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted);
+           cursor:pointer;white-space:nowrap;}
+  tbody td{padding:6px 10px;border-bottom:1px solid #21262d;vertical-align:top;
+           word-break:break-all;}
+  tbody tr:hover{background:#1c2128;}
+  .tag{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10.5px;
+       margin-right:4px;color:#0d1117;font-weight:600;}
+  .shared{color:var(--accent2);font-weight:600;}
+  #tooltip{position:absolute;pointer-events:none;background:var(--panel);
+           border:1px solid var(--border);border-radius:6px;padding:8px 10px;
+           font-size:12px;max-width:420px;word-break:break-all;display:none;
+           box-shadow:0 4px 16px rgba(0,0,0,.5);z-index:10;}
+  #detail{position:absolute;right:0;top:0;bottom:0;width:340px;background:var(--panel);
+          border-left:1px solid var(--border);padding:14px;overflow-y:auto;
+          transform:translateX(100%);transition:transform .15s ease;font-size:13px;}
+  #detail.open{transform:translateX(0);}
+  #detail h4{margin:0 0 8px 0;color:var(--accent);word-break:break-all;}
+  #detail .close{position:absolute;top:10px;right:12px;cursor:pointer;color:var(--muted);}
+  #detail ul{padding-left:18px;margin:6px 0 14px 0;}
+  #detail li{margin-bottom:4px;word-break:break-all;}
+  #loading{padding:40px;text-align:center;color:var(--muted);}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .legend-note{font-size:11px;color:var(--muted);padding:8px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🔎 IOC Explorer</h1>
+    <div class="sub">Matrix Project — cross-category indicator correlation</div>
+  </div>
+  <input id="search" type="text" placeholder="Search indicator, URL, domain, category…">
+</header>
+
+<div id="layout">
+  <div id="sidebar">
+    <h3>Categories</h3>
+    <div id="categoryList"><div class="legend-note">Loading manifest…</div></div>
+    <h3>About</h3>
+    <div class="legend-note">
+      Each category file maps an <b>indicator</b> (API key, bot token, email,
+      hash, URL…) to the phishing/malware <b>URL</b> it was extracted from.
+      Nodes shared across ≥2 categories are highlighted — they often point to
+      the same actor/campaign/infrastructure.
+    </div>
+    <div class="legend-note">
+      Serve this repo with a static HTTP server (e.g. <code>python3 -m
+      http.server</code>, or GitHub Pages) — <code>fetch()</code> won't load
+      local files over <code>file://</code>.
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="stats"></div>
+    <div id="tabs">
+      <button id="tabGraph" class="active">Graph</button>
+      <button id="tabTable">Table</button>
+    </div>
+    <div id="viewGraph">
+      <div id="loading">Loading data…</div>
+      <div id="tooltip"></div>
+      <div id="detail"><span class="close" onclick="closeDetail()">✕</span><div id="detailBody"></div></div>
+    </div>
+    <div id="viewTable">
+      <table>
+        <thead>
+          <tr>
+            <th data-k="category">Category</th>
+            <th data-k="indicator">Indicator</th>
+            <th data-k="url">Source URL</th>
+            <th data-k="shared">Shared indicator</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

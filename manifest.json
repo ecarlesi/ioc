@@ -1,0 +1,70 @@
+{
+  "categories": [
+    {
+      "file": "api.ip2location.txt",
+      "name": "api.ip2location"
+    },
+    {
+      "file": "botblocker.txt",
+      "name": "botblocker"
+    },
+    {
+      "file": "email.txt",
+      "name": "email"
+    },
+    {
+      "file": "extreme-ip-lookup.txt",
+      "name": "extreme-ip-lookup"
+    },
+    {
+      "file": "gobot.txt",
+      "name": "gobot"
+    },
+    {
+      "file": "google_recaptcha.txt",
+      "name": "google_recaptcha"
+    },
+    {
+      "file": "ipinfo.txt",
+      "name": "ipinfo"
+    },
+    {
+      "file": "moonito.txt",
+      "name": "moonito"
+    },
+    {
+      "file": "neutrinoapi.txt",
+      "name": "neutrinoapi"
+    },
+    {
+      "file": "proxycheck.txt",
+      "name": "proxycheck"
+    },
+    {
+      "file": "rapidapi.txt",
+      "name": "rapidapi"
+    },
+    {
+      "file": "stopbot_net.txt",
+      "name": "stopbot_net"
+    },
+    {
+      "file": "telegram.txt",
+      "name": "telegram"
+    },
+    {
+      "file": "url.txt",
+      "name": "url"
+    },
+    {
+      "file": "xantibot.net",
+      "name": "xantibot"
+    }
+  ],
+  "reports": [
+    {
+      "file": "reports/simulecxtcontrate.web.id.txt",
+      "name": "simulecxtcontrate.web.id"
+    }
+  ]
+}
