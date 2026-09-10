@@ -1,6 +1,10 @@
 {
   "categories": [
     {
+      "file": "antibot_pw.txt",
+      "name": "antibot_pw"
+    },
+    {
       "file": "api.ip2location.txt",
       "name": "api.ip2location"
     },
