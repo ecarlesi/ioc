@@ -2,7 +2,7 @@
 **Date:** 2026-09-14
 **Kit analysed:** Behpardakht Mellat payment-gateway impersonation
                     (Persian adult-services lure → fake Iranian bank checkout)
-**Host:** local kit dump (source domain unknown/not captured in this copy)
+**Host:** pingliveweb.site
 **Purpose:** Threat-intelligence sharing
 
 ---
