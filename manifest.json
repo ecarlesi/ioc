@@ -73,6 +73,10 @@
     {
       "file": "reports/centerhome.web.id.txt",
       "name": "centerhome.web.id"
+    },
+    {
+      "file": "reports/behpardakht-mellat-pay.txt",
+      "name": "behpardakht-mellat-pay"
     }
   ]
 }

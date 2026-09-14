@@ -1,0 +1,68 @@
+# IoC Report — Phishing Kit Analysis
+**Date:** 2026-09-14
+**Kit analysed:** Behpardakht Mellat payment-gateway impersonation
+                    (Persian adult-services lure → fake Iranian bank checkout)
+**Host:** local kit dump (source domain unknown/not captured in this copy)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+Two-stage Persian-language kit: an adult-services landing page funnel feeds
+into a near-pixel-perfect clone of the Behpardakht Mellat (به پرداخت ملت)
+Iranian bank payment gateway. Harvests full card data (PAN, PIN2, CVV2,
+expiry, OTP/captcha), Luhn-validates and BIN-maps it against 27 Iranian
+banks, relays to an external C2 panel, then exfiltrates to Telegram.
+Multi-card harvesting via a fake "payment failed, try another card" page.
+
+## Telegram Bots / Secrets
+
+| Bot token | chat_id | Live status (getMe, 2026-09-14) | Notes |
+|---|---|---|---|
+| `8096739747:AAE22S2xCn_TC2VG5h81IkaDvKddA9vvWSo` | `-1003336804959` | ✅ live, "سیستم عامل 1" / `@V1EDLBOT` | webhook active (getUpdates → 409, not inspected) |
+
+## Network Indicators
+
+| Type | Value | Role |
+|---|---|---|
+| Domain | `sliooboot.xyz` | External C2/panel backend (`/clo10/telgram/{cli,play}.php`) — refid issuance + card relay |
+
+## Hosting-account path leaked via PHP `error_log`
+
+`/home/hiolkrpu/public_html/c/a/mireo/pay/` (dated March 2025)
+
+## Kit attribution / distribution (Telegram)
+
+- `@X_KILER` / `t.me/X_KILER` — claimed kit author
+- `@X_FISHING` — claimed distribution channel
+- `@phonixhouse` — channel credited with publicly leaking this kit source
+
+## Victim data already present
+
+143 real Iranian payment-card PANs already harvested (files in
+`payment/data_code/`), timestamps 2025-03-07 → 2025-11-29, spanning 10+
+major Iranian banks (Melli, Mellat, Saderat, Sepah, Saman, Pasargad,
+Tejarat, Keshavarzi, Refah, Resalat, and 17 others). Full PANs not
+republished — see Matrix workspace analysis for masked breakdown.
+
+## Bank BIN-recognition fingerprint (code-level IOC)
+
+27-bank BIN table in `functions.php:bank_information()` — copy-pasted
+across kit variants targeting Iranian banks; useful fingerprint for
+finding sibling/derivative kits.
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID | Notes |
+|---|---|---|
+| Phishing | T1566 | Adult-services lure + fake bank gateway |
+| Phishing for Information | T1598 | Multi-step card + OTP/captcha harvesting |
+| Web Service (C2/exfil) | T1102 / T1567 | Telegram Bot API exfil + external C2 relay |
+| Masquerading | T1036 | Behpardakht Mellat/Shaparak brand cloning |
+
+---
+
+*Report generated from static analysis of a locally-provided kit dump plus
+live (read-only) Telegram Bot API `getMe`/`getUpdates` checks. Full
+write-up: Matrix workspace
+`analysis/behpardakht-mellat-payment-phish_20260914/`.*

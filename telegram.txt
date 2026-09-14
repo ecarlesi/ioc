@@ -574,3 +574,4 @@
 7257595574:AAFs2gRrOup2g5oyZ-KmqjGiXDDY6nzewZY,https://centerhome.web.id/HomeCredit-IDN.zip
 8866674365:AAEv5-60jdYNIfNlH50aXDNRA0ckW-B7Nuo,https://centerhome.web.id/Penukaran-Poin.zip
 8753800630:AAFEsH2BbdOs_8WwpV8CtPfTrsOMk1LXOz4,https://centerhome.web.id/Penukaran-Poin.zip
+8096739747:AAE22S2xCn_TC2VG5h81IkaDvKddA9vvWSo,local-dump:/home/eca/Temp/B
