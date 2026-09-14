@@ -1,0 +1,101 @@
+# IoC Report — Phishing Kit Analysis
+**Date:** 2026-09-14
+**Kits analysed:** `HomeCredit-IDN` / `HomeCreditInfo` (Home Credit BNPL impersonation),
+`Penukaran-Poin` / `auobab` (UOB Rewards bank-card impersonation)
+**Host:** `centerhome.web.id` (open-autoindex kit staging server, registered 2026-09-13,
+Cloudflare-fronted, LiteSpeed)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Kit 1 — Home Credit (BNPL impersonation)
+
+### Description
+Multi-step credential/OTP harvester impersonating Home Credit Indonesia. Flow: loading splash →
+help-center chooser → login (phone + PIN) → 6-digit OTP capture. Exfiltrates via Telegram Bot API
+(`sendMessage`, `parse_mode=markdown`) called synchronously from PHP (`curl_exec`) on every step.
+Four near-identical copies found, differing only in embedded Telegram bot token/chat_id — same
+kit-builder template (`HOME CREDIT.zip` / `HOMECREDIT HYBRID.zip` bundle names).
+
+### Telegram Bots / Secrets
+
+| Bot token | chat_id | Live status (getMe, 2026-09-14) | Notes |
+|---|---|---|---|
+| `8714497674:AAFGvngbCJuLFv7Uti4wNfhQZIdDe92Rvp0` | `6346357458` | ✅ live, `@Homecreditgacor112233bot` | webhook → `livegram.io` |
+| `8807828514:AAFNqyEVHRcodwsIg8I5q3J-jADNcZcH3u4` | `8592585796` | ❌ 401 dead/revoked | **already known — matches `telegram.txt` entry for `cc.confirms.web.id/HomeCredit-IDN.zip`, confirming kit reuse across two different domains** |
+| `7257595574:AAFs2gRrOup2g5oyZ-KmqjGiXDDY6nzewZY` | `5508785466` | ✅ live, `@Tiktok1Return_Bot` | **also already known — same `cc.confirms.web.id/HomeCredit-IDN.zip` pairing**; no webhook; `getUpdates` empty |
+
+### Network Indicators
+
+| Type | Value | Role |
+|---|---|---|
+| Domain | `centerhome.web.id` | Kit staging host (autoindex exposed) |
+| Domain | `livegram.io` | Telegram bot webhook relay (bot-as-a-service) |
+| IP | `94.130.10.2` | `livegram.io` webhook endpoint (Hetzner DE) |
+| Domain | `cdn.phototourl.com` | Fake OG preview image CDN (shared across kit copies) |
+
+### Hosting-account usernames leaked via PHP `error_log`
+
+| Username | Kit copy |
+|---|---|
+| `tetetet` | `HomeCredit-IDN` |
+| `tettete` | `HomeCreditInfo` |
+
+---
+
+## Kit 2 — UOB Rewards ("Penukaran-Poin" — points redemption / cashback, bank-card impersonation)
+
+### Description
+More aggressive multi-step harvester impersonating UOB Bank's rewards program. Flow: phone number
+→ fake points dashboard → cashback percentage slider → **full card details** (PAN, cardholder
+name, expiry, CVV) → 6-digit OTP → fake "wrong OTP" retry loop (to catch corrected/second OTP
+attempts). Same Telegram exfiltration pattern as Kit 1. Two instances found (`Penukaran-Poin/` and
+a byte-identical nested copy `Penukaran-Poin/auobab/` from `auobab.zip`), each with its own
+Telegram destination — evidence of the same template resold/reused by (at least) two operators.
+
+### Telegram Bots / Secrets
+
+| Bot token | chat_id | Live status (getMe, 2026-09-14) | Notes |
+|---|---|---|---|
+| `8866674365:AAEv5-60jdYNIfNlH50aXDNRA0ckW-B7Nuo` | `7660048705` | ✅ live, "NOTIFIKASI BARU UOBB" / `@Ajjsjsjdkdbot` | webhook → `livegram.io` |
+| `8753800630:AAFEsH2BbdOs_8WwpV8CtPfTrsOMk1LXOz4` | `5518020094` | ✅ live, "INFORMASII" / `@tesssbsbsbsbot` | webhook → `livegram.io` |
+
+### Hosting-account username leaked via PHP `error_log`
+
+| Username | Kit copy |
+|---|---|
+| `pergiiiiiiiiiiii` | `Penukaran-Poin` |
+
+### Harvested data fields (by design)
+
+Phone number, full card number (PAN), cardholder name, card expiry (MM/YY), CVV, 6-digit OTP.
+No victim data was found already queued in this archive — `getUpdates`/webhook checks and local
+error logs show only test/incomplete submissions.
+
+---
+
+## Cross-Kit / Cross-Campaign Correlation
+
+| Indicator | This host (`centerhome.web.id`) | Other known host | Conclusion |
+|---|---|---|---|
+| Bot token `8807828514:AAFN…` | `HomeCredit-IDN.zip` | `cc.confirms.web.id/HomeCredit-IDN.zip` (pre-existing `telegram.txt` entry) | **Same actor/kit redeployed on two domains** |
+| Bot token `7257595574:AAFs…` | `HOME CREDIT.zip` (nested) | `cc.confirms.web.id/HomeCredit-IDN.zip` (pre-existing `telegram.txt` entry) | **Same actor/kit redeployed on two domains** |
+| `livegram.io` webhook relay | 3 bots on this host | Pre-existing `url.txt` entry (`7376512226:AAEI…` → `dxdxid.web.id/radid2x.zip`, unrelated brand) | `livegram.io` is a **shared bot-as-a-service relay reused across unrelated phishing campaigns/actors**, not exclusive infrastructure of this kit |
+| Field-naming convention (`a`,`b`,`c[1-6]`,`d`,`e`,`f[1-6]`) | Both Home Credit and UOB kits | — | Single kit-builder/template author serving multiple brand impersonations |
+| Archive bundle pattern (`<Name>.zip` w/ `req/`+`telegram.php`) | `HOME CREDIT.zip`, `HOMECREDIT HYBRID.zip`, `auobab.zip` | — | Standardized redeploy package: swap `telegram.php`, redeploy |
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID | Notes |
+|---|---|---|
+| Phishing | T1566 | Fake Home Credit / UOB landing pages |
+| Phishing for Information | T1598 | Multi-step credential + card + OTP harvesting |
+| Web Service (C2/exfil) | T1102 / T1567 | Telegram Bot API exfil, relayed via `livegram.io` |
+| Multi-Factor Authentication Interception | T1111 | Explicit OTP capture with "wrong code" retry loop |
+| Masquerading | T1036 | Home Credit / UOB brand cloning, fake SSL/PCI-DSS/OJK trust badges |
+
+---
+
+*Report generated from static analysis of kit source files plus live (read-only) Telegram Bot API
+`getMe`/`getWebhookInfo`/`getUpdates` checks and DNS/WHOIS/urlscan.io enrichment. Full write-up:
+Matrix workspace `analysis/centerhome-web-id-homecredit-uob-phish_20260914/`.*

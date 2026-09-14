@@ -69,6 +69,10 @@
     {
       "file": "reports/simulecxtcontrate.web.id.txt",
       "name": "simulecxtcontrate.web.id"
+    },
+    {
+      "file": "reports/centerhome.web.id.txt",
+      "name": "centerhome.web.id"
     }
   ]
 }
