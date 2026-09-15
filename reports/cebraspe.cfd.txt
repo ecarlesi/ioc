@@ -1,0 +1,105 @@
+# IoC Report — cebraspe.cfd (PMAL fake-concurso PIX scam)
+**Date:** 2026-09-15
+**Kit analysed:** `pmalagoas` (fake "Concurso Público PM AL 26" — Alagoas
+Military Police recruitment exam)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+Brazilian fake public-exam (concurso público) phishing/scam kit
+impersonating the Polícia Militar do Estado de Alagoas (PMAL). The
+delivery domain itself abuses the CEBRASPE brand (Brazil's real
+public-exam board). Collects the victim's CPF, looks up their real
+name/date of birth via an illegal third-party API, uses that data in a
+fake "identity verification" step to build trust, then extracts money
+via TWO sequential fraudulent PIX charges routed through a live
+BravoPay merchant account (same API key reused for both charges).
+
+HTML comments left in two legacy pages (`seguro/nascimento/index.html`,
+`seguro/verificar/index.html`) show the base template was originally
+HTTrack-mirrored from `inss.cadastro-online.com` (fake INSS site,
+Apr/May 2025) and later re-skinned for state Military Police brands
+(evidence of a PMERJ -> PMESP -> PMAL lineage found in
+`.claude/settings.local.json` saved `sed` commands renaming
+`Bras_C3_A3o_PMERJ.png` image references).
+
+---
+
+## Credentials / Secrets
+
+| Type | Value | Source |
+|------|-------|--------|
+| BravoPay live API key | `bp_live_PqTf3MS6jQtOqzwNP54CPkQkwG0479GawGrWCA` | `seguro/seguro/gerar/{criarpix,consultarpix}.php` AND `upsz/{criarpix,consultarpix}.php` (same key reused for both the primary and the upsell PIX charge) |
+| CPF-lookup API token | `c5eebbc9-0469-4324-85f6-0c994b42d18a` | `seguro/inscricao.html/consultar.php` |
+| Meta/Facebook Pixel ID | `66875048c312882a5f833366` | `seguro/inscricao.html/index.html` |
+
+---
+
+## Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| URL | `https://bravopay.club/api/v1/transactions` | PIX payment-gateway API used to mint fraudulent charges |
+| URL | `https://api.amnesiatecnologia.lat/` | Illegal CPF-to-PII lookup service (returns name/DOB/mother's name/sex from CPF) |
+| URL | `https://cdn.utmify.com.br/scripts/...` | Ad-conversion tracking (UTMify) |
+
+---
+
+## Delivery / hosting cluster (live, 2026-09-15, via Matrix ES)
+
+3 domains, same IP, same registrar, registered the same day, all serving
+the identical kit via an open directory listing:
+
+```
+cebraspe.cfd           177.104.186.226   (also serves pmalagoas.zip + php.ini publicly)
+cebraspe2026.cfd        177.104.186.226
+cebraspeedital.cfd      177.104.186.226
+```
+
+Registrar: Dynadot Inc (`abuse@dynadot.com`), registered 2026-09-14,
+name servers `ns[1-4].dnspro.com.br`.
+
+---
+
+## Fraudulent payment amounts
+
+```
+upsz/criarpix.php                              -> R$ 47.90 ("Taxa de Verificação")
+seguro/seguro/gerar/pagamento.html/index.html  -> dynamic "Taxa de Inscrição" (same backend pattern)
+```
+
+---
+
+## TTPs
+
+- Ad-driven landing page (UTMify + Meta Pixel) impersonating a real
+  Brazilian state Military Police recruitment exam.
+- Reverse "identity verification" trick: kit already knows the victim's
+  real name/DOB (fetched server-side from a CPF-lookup API) and asks the
+  victim to pick it out of a randomized decoy list, inverting the usual
+  trust dynamic of a verification form.
+- Double monetization: a primary "registration fee" PIX charge followed
+  immediately by a second, independent "verification fee" PIX charge —
+  same merchant/API key, different amount/label.
+- Multi-brand template reuse (INSS -> PMERJ -> PMESP -> PMAL) evidenced
+  by leftover HTTrack mirror comments and saved `sed` asset-rename
+  commands in an AI-coding-assistant config file
+  (`.claude/settings.local.json`).
+
+---
+
+## Cross-kit correlation
+
+First sighting in this IOC repo of both the BravoPay API key and the
+`api.amnesiatecnologia.lat` CPF-lookup service (checked against existing
+`url.txt`/`email.txt` entries at review time, 2026-09-15).
+
+---
+
+## MITRE ATT&CK mapping
+
+- T1566 — Phishing (ad-driven landing page)
+- T1656 — Impersonation of legitimate organization (PMAL + CEBRASPE)
+- T1567 (adjacent) — Data exfiltration via third-party API abuse (PII pulled from a CPF-lookup service rather than exfiltrated from the victim directly)

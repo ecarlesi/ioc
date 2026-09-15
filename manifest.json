@@ -77,6 +77,10 @@
     {
       "file": "reports/behpardakht-mellat-pay.txt",
       "name": "behpardakht-mellat-pay"
+    },
+    {
+      "file": "reports/cebraspe.cfd.txt",
+      "name": "cebraspe.cfd"
     }
   ]
 }
