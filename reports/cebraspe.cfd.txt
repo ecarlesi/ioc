@@ -47,19 +47,33 @@ Apr/May 2025) and later re-skinned for state Military Police brands
 
 ---
 
-## Delivery / hosting cluster (live, 2026-09-15, via Matrix ES)
+## Delivery / hosting cluster (live, 2026-09-15, via Matrix ES + live re-check)
 
-3 domains, same IP, same registrar, registered the same day, all serving
-the identical kit via an open directory listing:
+4 domains, same IP, same registrar, all serving the identical kit
+(`pmalagoas.zip`, 21,454,796 bytes, same timestamp) via an open
+directory listing:
 
 ```
-cebraspe.cfd           177.104.186.226   (also serves pmalagoas.zip + php.ini publicly)
-cebraspe2026.cfd        177.104.186.226
-cebraspeedital.cfd      177.104.186.226
+cebraspe.cfd            177.104.186.226   (registered 2026-09-14; also serves pmalagoas.zip + extracted kit folders + php.ini publicly)
+cebraspe2026.cfd         177.104.186.226   (registered 2026-09-14)
+cebraspeedital.cfd       177.104.186.226   (registered 2026-09-14)
+connect-atacado.store    177.104.186.226   (registered 2026-09-10, 4 days earlier - a pre-provisioned staging domain later loaded with the same kit; serves pmalagoas.zip + a leftover __MACOSX/ folder from the same archive extraction)
 ```
 
-Registrar: Dynadot Inc (`abuse@dynadot.com`), registered 2026-09-14,
-name servers `ns[1-4].dnspro.com.br`.
+Registrar: Dynadot Inc (`abuse@dynadot.com`). The 3 `cebraspe*` domains
+were registered same-day (2026-09-14); `connect-atacado.store` was
+registered 2026-09-10 and shares the fake-TikTok-lure naming pattern
+(paired with the unrelated `atacado-connect.store`, note reversed word
+order) of a different scam on this same shared IP — but a live HTTP
+re-check confirmed it now hosts the identical pmalagoas kit archive,
+not the TikTok lure. Name servers: `ns[1-4].dnspro.com.br`.
+
+**Correction note (2026-09-15):** `connect-atacado.store` was initially
+excluded from this cluster based on a Smith snapshot that had captured
+it as an empty open directory before the kit was deployed there. A
+manual live re-check confirmed it now serves the same `pmalagoas.zip`
+archive as the other 3 domains — added here as the cluster's 4th
+domain.
 
 ---
 
