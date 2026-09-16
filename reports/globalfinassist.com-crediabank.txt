@@ -31,6 +31,10 @@ handle Z0N51 (Telegram: @z0n51official, @z0n51pages, @elz0n51).
   desktop User-Agent returns HTTP 200 redirected to hxxps://www[.]google[.]com/ -
   matches the kit's own coded bot-redirect gate exactly, confirming this is the
   live, access-gated deployment.
+- urlscan.io submission (authorized, 2026-09-16): uuid 01a0ab64-bcd3-75fa-b6c5-111e2095fbec,
+  malicious=False score=0, hit the site root (open directory listing) at
+  172.67.155.212 (AS13335 Cloudflare) - did not target /credia/ specifically, so the
+  actual gated lure page was not captured in this pass.
 
 ## Anti-detection services referenced in code
 | Service | Endpoint | Notes |
