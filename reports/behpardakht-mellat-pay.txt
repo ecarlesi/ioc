@@ -26,6 +26,7 @@ Multi-card harvesting via a fake "payment failed, try another card" page.
 | Type | Value | Role |
 |---|---|---|
 | Domain | `sliooboot.xyz` | External C2/panel backend (`/clo10/telgram/{cli,play}.php`) — refid issuance + card relay |
+| Domain | `pingliveweb.site` | Kit archive drop-site (source of `B.zip`) — hosted at `45.252.181.5` (AS48011 DigiTurunc, Turkey), still up as of 2026-09-16 and serving an **open directory listing** (`Index of /`). urlscan.io: malicious=False score=0 (uuid `01a0ab47-9b87-77ed-bf04-aa59c47b3ec9`). Separate infrastructure from the `sliooboot.xyz` C2. |
 
 ## Hosting-account path leaked via PHP `error_log`
 
