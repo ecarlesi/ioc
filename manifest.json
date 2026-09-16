@@ -81,6 +81,10 @@
     {
       "file": "reports/cebraspe.cfd.txt",
       "name": "cebraspe.cfd"
+    },
+    {
+      "file": "reports/globalfinassist.com-crediabank.txt",
+      "name": "globalfinassist.com-crediabank"
     }
   ]
 }

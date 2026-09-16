@@ -1,0 +1,82 @@
+# IoC Report — Phishing Kit Analysis
+**Date:** 2026-09-16
+**Kit analysed:** CrediaBank (Greek bank) e-banking phishing-kit-as-a-service, branded "Z0N51PANEL"
+**Host:** globalfinassist.com (kit archive: hxxps://globalfinassist[.]com/crediabank.zip)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+Full-featured phishing-kit-as-a-service impersonating CrediaBank (crediabank.com,
+a real Greek bank). Multi-layer bot/analyst-detection front gate (BotBlocker.pro API,
+hCaptcha, IP/UA/country/device filtering, one-time-access-per-IP) precedes a
+multi-step e-banking clone: login -> password -> card number/expiry/CVV -> one of
+SMS/push/email-code OTP (operator's live choice, driven from an admin panel via a
+shared SQLite real-time bridge) -> full KYC-grade details (full name, tax ID,
+national ID, birth date, email, phone) -> ID-document upload endpoint. A
+multi-tenant admin panel ("Z0N51PANEL") with role-based sub-accounts suggests
+resale/sub-licensing to multiple operators. Authored/branded by an actor using the
+handle Z0N51 (Telegram: @z0n51official, @z0n51pages, @elz0n51).
+
+## Delivery / hosting
+- globalfinassist.com : compromised host, OPEN DIRECTORY LISTING (Index of /),
+  serving /cgi-bin/, /credia/ (an already-unpacked LIVE deployment of the kit,
+  distinct from the downloadable archive), /inc/, and crediabank.zip itself.
+  Domain registered 2026-09-15 (fresh NRD, 1 day before detection), registrar
+  OwnRegistrar Inc. (IANA ID 1250), fronted by Cloudflare (nameservers
+  april.ns.cloudflare.com / karl.ns.cloudflare.com; A records 172.67.155.212,
+  104.21.64.206 - real origin hidden). Matrix Smith tags: Opendir, opendirfiles,
+  Threat, phishing.
+- Live-check (2026-09-16): fetching hxxps://globalfinassist[.]com/credia/ with a
+  desktop User-Agent returns HTTP 200 redirected to hxxps://www[.]google[.]com/ -
+  matches the kit's own coded bot-redirect gate exactly, confirming this is the
+  live, access-gated deployment.
+
+## Anti-detection services referenced in code
+| Service | Endpoint | Notes |
+|---|---|---|
+| BotBlocker.pro | hxxps://botblocker[.]pro/api/v1/blocker | Key sourced from config.db, NOT present in this kit copy |
+| pro.ip-api.com | hxxps://pro.ip-api[.]com/php/{ip}?key=UO8wl6MQD2zPxmf | Hardcoded key in shipped index.php |
+| hCaptcha | hxxps://hcaptcha[.]com/siteverify | Site/secret keys sourced from config.db, NOT present in this kit copy |
+| binlist.net | hxxps://lookup.binlist[.]net/{bin} | BIN lookup for card-brand display |
+
+## Hardcoded setup-panel password
+`crdd9555dd` — gates install.php (first-run config wizard writing config.db).
+
+## Kit attribution / distribution (Telegram)
+- @z0n51official — t.me/z0n51official (primary author contact, every PHP file header)
+- @z0n51pages — t.me/z0n51pages (channel)
+- @elz0n51 — t.me/elz0n51 (secondary contact)
+
+## Victim data fields harvested
+username, password, full card number + expiry + CVV, SMS/email OTP code, push
+confirmation, full_name, tax_id, national_id, birth_date, email, phone, ID-document
+upload (endpoint present, no real victim documents in this copy).
+
+## Notable architecture
+Shared SQLite database (panel/database.db: users/visitors/data tables) as a
+real-time message bus between the public lure app and the private admin panel -
+lets a human operator watch a victim live and choose (per victim) whether to demand
+SMS OTP, push confirmation, or email code, i.e. functionally a live AitM/OTP-relay
+tool rather than a static phish. Multi-tenant role-based admin accounts
+(role=1 superadmin / role=2 sub-accounts) support resale to multiple operators.
+Shipped panel/database.db is EMPTY (0 rows all 3 tables) in this copy - clean
+template, no victim PII present. No config.db (Telegram token/SMTP creds/
+BotBlocker+hCaptcha keys) shipped in this archive - pre-configuration state.
+
+## MITRE ATT&CK Mapping
+| Technique | ID | Notes |
+|---|---|---|
+| Phishing | T1566 | CrediaBank e-banking clone, full login->OTP->PII funnel |
+| Phishing for Information | T1598 | Card/CVV, tax ID, national ID, DOB, phone, ID-document upload |
+| Adversary-in-the-Middle | T1557 | Live operator-driven sms/push/emailcode step chosen per victim |
+| Exfiltration Over Web Service | T1567 | Telegram Bot API and/or SMTP (PHPMailer), operator-configurable |
+| Masquerading | T1036 | CrediaBank brand/logo/copy cloned verbatim, bilingual EL/EN |
+| Compromised Infrastructure | T1584.004 | globalfinassist.com - Opendir, fresh NRD, Cloudflare-fronted |
+| Defense Evasion | T1497 | BotBlocker.pro, hCaptcha, geo/device/UA filtering, one-time-access-per-IP |
+
+---
+
+*Report generated from static analysis of a locally-provided kit dump plus live
+HTTP/RDAP/DNS checks and a Matrix Elasticsearch cross-check. Full write-up: Matrix
+workspace `analysis/crediabank-phish_20260916/`.*
