@@ -1,0 +1,55 @@
+# IoC Report — Phishing/Dropper Kit Follow-up
+**Date:** 2026-09-17
+**Kit analysed:** VBScript dropper -> Telegram notify -> ScreenConnect RAT
+                    (fake e-vite + fake IRS transcript lures)
+**Host:** zhostz.com (open directory, registered 2026-09-17, same day as detection)
+**Related prior report:** invite-viewer.app (Matrix workspace
+                            analysis/invite-viewer-dropper_20260831/, blog post 1771)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+Same actor and tooling as the invite-viewer.app campaign (2026-08-31), redeployed on
+a freshly-registered open-directory host. Two working VBS droppers
+(byte-identical to the original) fetch a ScreenConnect RMM installer disguised as an
+event invitation or IRS transcript viewer, silently install it via msiexec, and send
+a Telegram-based installation report (system, platform, network/geo-IP, exit code)
+before self-deleting. A third VBS variant remains broken/inert (unterminated string
+bug, same as originally reported).
+
+## New indicator found in this pass
+| Type | Value | Notes |
+|---|---|---|
+| Domain | `punchbwl.screenconnect.com` | Second ScreenConnect instance (decoded from invitation_viewer.vbs); confirmed live via DNS (CNAME to server-ovh30010052-web.screenconnect.com) |
+
+## Re-confirmed indicators (unchanged from the 2026-08-31 report)
+| Type | Value | Live status (2026-09-17) |
+|---|---|---|
+| Telegram bot | `8647153928:AAHy-5esR5ZVCE1iRY2IvaweTH9_DX7jg5w` (chat 860928816) | LIVE (getMe -> "SC-NOTIFICATION" / @SCMAKABOT) |
+| Telegram bot | `6452015273:AAHsbxWgxOWxbYzP1He8kBpZz3hXN1XDyrg` (chat 6344746435) | LIVE (getMe -> @Financialika_bot) |
+| Domain | `cons.cirarosi.org` | Resolves (behind Cloudflare, 188.114.x.x) |
+| Domain | `jwhazlett.screenconnect.com` | LIVE (CNAME to server-ovh30010024-web.screenconnect.com) |
+| Domain | `invite-viewer.app` (original staging host) | DEAD (NXDOMAIN / no A record) |
+
+## Notable finding
+The recovered `invite.html` lure page still hardcodes its VBS download link to the
+now-dead `invite-viewer.app` domain, with a leftover developer comment
+"// REPLACE THIS WITH YOUR SCRIPT URL" — indicating `zhostz.com` was caught as a
+builder/staging copy not yet re-pointed to serve real victims, rather than an
+actively-distributed lure on this specific domain.
+
+## MITRE ATT&CK Mapping
+| Technique | ID | Notes |
+|---|---|---|
+| Phishing | T1566 | Fake e-vite / fake IRS transcript viewer lure |
+| User Execution | T1204.002 | VBS dropper requires the victim to run the downloaded file |
+| Remote Access Software | T1219 | ScreenConnect RMM abused as a backdoor |
+| Exfiltration Over Web Service | T1567 | Telegram Bot API installation-report notifications |
+| Masquerading | T1036 | "Invitation viewer" / "IRS transcript viewer" file naming |
+
+---
+
+*Report generated from static analysis of a locally-provided kit dump (open
+directory mirror) plus live DNS/RDAP/Telegram Bot API checks. Full write-up: Matrix
+workspace `analysis/invite-viewer-dropper_20260831/` (README.md Follow-up section).*

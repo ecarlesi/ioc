@@ -85,6 +85,10 @@
     {
       "file": "reports/globalfinassist.com-crediabank.txt",
       "name": "globalfinassist.com-crediabank"
+    },
+    {
+      "file": "reports/zhostz.com-invite-viewer-followup.txt",
+      "name": "zhostz.com-invite-viewer-followup"
     }
   ]
 }
