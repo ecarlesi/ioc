@@ -1,0 +1,149 @@
+# IoC Report — inicio-verificacao.online (cpn16set CPF-blocked-balance PIX scam)
+**Date:** 2026-09-18
+**Kit analysed:** `cpn16set` (fake gov.br/Banco do Brasil "blocked CPF balance" advance-fee scam)
+**Host:** inicio-verificacao.online (kit archive: hxxps://inicio-verificacao[.]online/cpn16set%20tm.zip)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+Brazilian "blocked government balance" advance-fee scam kit impersonating
+gov.br/Banco do Brasil. Full PHP+SQLite stack: a cloaking gate (secret
+query-string token required to reach the real funnel, else a decoy
+"financial diagnosis" page is shown), a React "Gov Auth" CPF
+lookup/verification SPA, two embedded Typebot chatbot steps, a fake
+6-second "encrypted verification" progress bar, a multi-gateway PIX
+checkout (4 interchangeable payment providers), and a 5-stage upsell
+chain (fake "IOF tax" charges, one directly impersonating Banco do Brasil
+with a real CNPJ number). Every page beacons to an admin/tracking panel
+every 6 seconds with session/visitor ID, path, referrer, UA, and — when
+present in the URL — the victim's name and CPF.
+
+**Not a bare template.** This copy shipped with real operational data
+from an already-run ~41-hour campaign (2026-09-15 to 2026-09-16): 356
+distinct victim CPFs, 31,900+ tracking events carrying a victim's full
+name, and 13 confirmed real PIX payments collected (~R$936 total) out of
+~106 payment attempts. Full write-up: Matrix workspace
+`analysis/cpn16set-cpf-scam_20260918/` (victim PII redacted there per
+policy; aggregate stats only).
+
+---
+
+## Credentials / Secrets
+
+| Type | Value | Source |
+|------|-------|--------|
+| BravoPay live API key | `bp_live_ukkHWeJ8723dsTHCwQ64pjtXGaUO66ZOdbYoVg` | `checkout/config/providers.json` |
+| ZazziPay public key | `pk_qDOqe9dkXYZcpT5ls4p10_Wl6WkQPHOgNCLzByIE2IT2MPIu` | `checkout/config/providers.json` (active gateway, 108/115 observed transactions) |
+| ZazziPay secret key | `sk_aJAsRIRLZxJa1UpOEbKbEvYCJhXXlTYxmnSSn-UsfFqSJMvP` | `checkout/config/providers.json` |
+| FullHub Pix secret key | `fullhub_sk_9e572486637447221b0d3cde3677fb9d7814227967f108aee14a43c2` | `checkout/config/providers.json` |
+| "Pagamentos" hub store ID | `pvRJ-nc2B-pYXd-VATW` | `checkout/config/providers.json` (Cloudflare-fronted, HTTP 404 at check time — retired/rotated) |
+| UTMify API token | `hyUp6Y62pHt7qLDYUKAXr15t90tuM01I2dpR` | `checkout/config/utmify.json` |
+| Facebook Pixel #1 access token | `EAABu5c8JI5kBP8EK6180M1eKJpNoZCHMZAQWd9hlZA8xBCP38voPwySpsinnMXZA9lqlWAEObmY1uwgNHohmQ2Q7JPdhMC8jWvthjpyq09pDqwYhta6xZA7bTzL4auYWojAM70gLwrp9y7sKtrFWWgr5wk8Fmo2eNMe5afeHRRGMszkasPp0bEJUAllXZCNU30agZDZD` (Pixel ID `1352081043310093`) | `checkout/config/pixels.json` |
+| Facebook Pixel #2 access token | `EAARaQhD8pBUBQKl239OlvVJ3Vxn6bUdkNRM5ZClPXQccxrUzomeuiqrJZAuYvk2K8zE6Sbxd2zs6dKBXlZB2YNZAdSZBDLdc6TMz4x75rGzFDHor0z4AAxr5FR8jCFvKUqhDL67psBwUvZAx3mBAWBBQp5CSZBiB5i7Ks5VueqyRT6D9AQt4JGFxTLoGpBTDhEwJwZDZD` (Pixel ID `2021016908647999`) | `checkout/config/pixels.json` |
+| Facebook Pixel #3 access token | `EAAOIxseSeqUBRiYWOhX0iNtiW9qbAIZCa5Si1SqZAf6nYqODdc0qdvpXnOeLU9OU2ncAk20AZAd4TCFSO1vUE7rwTQ90217Lga1ALJbz64x7rAUdieabJQzg2w3lOYoFLpx9bVWV2JnN5tbROSVwB4BLJyDToHGCMuJCVFNla52za2fq9as7lmVcMnLXAZDZD` (Pixel ID `1663027141667041`) | `checkout/config/pixels.json` |
+| Google Ads conversion ID | `AW-987654321` | `checkout/config/google_pixels.json` |
+| Admin panel password | `123mudar` (also via `?pw=123mudar` GET bypass) | `admin/index.php`, `admin/api.php` |
+
+---
+
+## Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| URL | `https://bravopay.club/api/v1` | PIX payment-gateway API. **Cross-kit correlation**: same domain, DIFFERENT key, already reported in `reports/cebraspe.cfd.txt` (unrelated PMAL/CEBRASPE campaign) — likely a bulletproof/complicit PIX processor serving multiple unrelated fraud operators. |
+| URL | `https://api.zazzipay.site/v1` | PIX payment-gateway API (active provider, most transactions) |
+| URL | `https://app.fullhubpix.com/api/v1` | PIX payment-gateway API |
+| URL | `https://finalizacao-etapa.online` | Generic "Pagamentos Hub" PIX aggregator endpoint (Cloudflare-fronted, retired/rotated) |
+| URL | `https://bot-typebot-viewer.toi2et.easypanel.host` | Shared Typebot chatbot viewer host (EasyPanel PaaS), IP `45.154.159.46`; flow paths `/gov-v-2-bk-2026-u2ddslz` and `/up-do-gov-bk-l4mx8pb` |
+
+---
+
+## Delivery / hosting
+
+```
+inicio-verificacao.online   89.163.155.33   (registered 2026-09-17T12:06:15Z, registrar NameSilo LLC, privacy NS ns7/ns8.privatedns.vip; open directory listing (LiteSpeed autoindex) serving cpn16set%20tm.zip AND an unpacked cpn16set/ copy; .php returns 404 on this host - no PHP execution, used as file/zip storage/staging only, not the production deployment)
+```
+
+urlscan.io submission (authorized, 2026-09-18): uuid
+`01a0b394-4fab-747c-a714-5103a929eae0`, malicious=False score=0, HTTP 200,
+IP `89.163.155.33` — hit the open-directory listing itself (the real
+lure requires the secret query-string cloaking token to render).
+
+---
+
+## Fraudulent payment amounts (fake fee schedule)
+
+```
+"Lançamento" (main charge)     -> R$68.93
+"CPF PREMIADO" order bump      -> +R$19.69
+Upsell chain (5 pages)          -> R$86.27 / R$19.00 / R$17.00 / R$16.99 / R$17.01
+```
+
+---
+
+## TTPs
+
+- Cloaking gate: real funnel only renders with a secret query-string
+  token present; all other visitors (scanners, casual clicks) see an
+  innocuous decoy page — defeats automated content scanners.
+- Fake "encrypted verification in progress" progress bar with no real
+  check behind it (pure UI theater to build trust before payment).
+- Multi-gateway PIX checkout (4 interchangeable providers) designed to
+  survive a merchant-account takedown by failing over to the next
+  processor.
+- Full paid-traffic attribution stack (Facebook CAPI + Pixel, Google Ads,
+  UTMify) with live credentials for 3 separate ad accounts already
+  configured — a real ad-driven operation, not organic reach.
+- `disable-devtool` npm package loaded specifically during the chatbot
+  steps to block browser DevTools, hindering manual/analyst inspection.
+- Trivial admin-panel auth: hardcoded password plus an undocumented
+  GET-parameter bypass left in from development.
+- AI-tooling artifact: a leftover screenshot filename referencing OpenAI
+  Codex, dated the day before the campaign started, suggests the kit was
+  built/iterated with AI coding-assistant help.
+
+---
+
+## Cross-kit correlation
+
+The BravoPay PIX gateway domain (`bravopay.club`) was already reported in
+`reports/cebraspe.cfd.txt` (2026-09-15, unrelated PMAL/CEBRASPE-themed
+scam) with a DIFFERENT live merchant API key. Two independently-lured,
+unrelated Brazilian PIX-scam kits both configured to use the same gateway
+domain, each with its own distinct merchant credentials, is a pattern
+worth tracking as a possible bulletproof/complicit-processor signal
+across future kit reports.
+
+---
+
+## Victim-impact statistics (aggregate only, PII redacted)
+
+```
+Distinct victim CPFs tracked           : 356
+Tracking events with a victim CPF      : 10,288
+Tracking events with a victim full name: 31,911
+Total tracking heartbeats              : 79,256+
+Distinct browser sessions              : 1,052
+Real PIX payments confirmed paid       : 13 (~R$936.13 total)
+Payment attempts recorded (all states) : 115 (85 waiting_payment, 13 paid, 8 pending, 9 error)
+Campaign observation window            : 2026-09-15 02:24 UTC -> 2026-09-16 19:39 UTC (~41h)
+```
+
+---
+
+## MITRE ATT&CK mapping
+
+- T1566 — Phishing (ad-driven cloaked landing page)
+- T1656 — Impersonation of legitimate organization (gov.br / Banco do Brasil)
+- T1036 — Masquerading (Banco do Brasil brand/CNPJ reproduced verbatim on an upsell page)
+- T1497 — Defense Evasion (cloaking gate + DevTools-blocking script)
+- T1584.004 — Compromised/rented infrastructure (open-directory delivery host)
+- T1657 — Financial Theft (sequential fraudulent PIX charges via 4 interchangeable payment-gateway integrations)
+
+---
+
+*Report generated from static analysis of a Matrix-crawled kit archive
+plus live HTTP/RDAP/DNS checks and urlscan.io submission. Full write-up:
+Matrix workspace `analysis/cpn16set-cpf-scam_20260918/`.*

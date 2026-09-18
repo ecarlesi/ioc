@@ -67,6 +67,10 @@
   ],
   "reports": [
     {
+      "file": "reports/inicio-verificacao.online-cpn16set.txt",
+      "name": "inicio-verificacao.online-cpn16set"
+    },
+    {
       "file": "reports/simulecxtcontrate.web.id.txt",
       "name": "simulecxtcontrate.web.id"
     },
