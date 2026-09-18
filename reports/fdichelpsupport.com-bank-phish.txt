@@ -1,0 +1,135 @@
+# IoC Report — fdichelpsupport.com (First United Bank + Texans CU phishing kits)
+**Date:** 2026-09-18
+**Kits analysed:** two separate credential-harvesting kits — "First United Bank" and "Texans CU"
+**Host:** fdichelpsupport.com (kit archives: hxxps://fdichelpsupport[.]com/First%20United%20Bank.zip, hxxps://fdichelpsupport[.]com/Texans%20CU.zip)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+An open directory on a domain impersonating the US FDIC (Federal
+Deposit Insurance Corporation) hosts two separate bank-credential
+phishing kits targeting First United Bank and Texans Credit Union.
+Both are deployments of the SAME commercial/shared "scam-page-as-a-service"
+kit framework: every backend PHP file (anti-bot engine, exfiltration
+logic, settings schema) is byte-identical between the two copies, and
+both hardcode the same license/seller handle (`@psyco_m`). Only the
+brand-specific mirrored HTML login pages and outbound message labels
+differ.
+
+Multi-step funnel: anti-bot fingerprint gate -> mirrored real bank
+login page (username+password) -> the SAME login page shown AGAIN
+("double-capture" technique) -> OTP/2FA code entry page -> fake
+"success" page that redirects to the real bank site after 6s. Every
+captured field is exfiltrated live via Telegram, with victim IP/UA
+attached.
+
+**Not yet armed with victim data.** Both kits' logs
+(`Settings/Bots-Logs/Bots.txt`, `Settings/Clients-Logs/Clicks.txt`) are
+empty — no credentials captured in this snapshot. Delivery domain
+registered the day before the crawl (2026-09-17).
+
+Full write-up: Matrix workspace `analysis/fdichelpsupport-bank-phish_20260918/`.
+
+---
+
+## Credentials / Secrets (attacker's own — reproduced in full)
+
+| Type | Value | Source |
+|------|-------|--------|
+| Telegram bot token | `8587481198:AAGcMw91hPAL3p2ssgIyRUDiY-fRDExatLM` | `Results/Telegram.php` (identical in both kit copies) |
+| Telegram chat ID | `5000006602` | `Results/Telegram.php` (identical in both kit copies) |
+| Operator fallback email | `yba.boss@aol.com` | `Results/Email.php` (channel disabled, `$Email='no'`) |
+| Kit license/seller handle | `@psyco_m` | `Settings/Settings.php` — `$LICENSEKEY` (Telegram handle baked into the purchased kit copy) |
+| Admin/dev bypass whitelist | `localhost`, `127.0.0.1`, `::1` | `Settings/whitelist.dat` |
+
+---
+
+## Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| URL | `https://fdichelpsupport.com/First%20United%20Bank.zip` | Kit archive #1, 5.9MB |
+| URL | `https://fdichelpsupport.com/Texans%20CU.zip` | Kit archive #2, 4.6MB |
+| URL | `https://bestwaytohelpyourfamilyandself.com/GDG/index.php` | External fraud-scoring API called on every non-whitelisted visit. Currently NXDOMAIN — retired/rotated shared anti-bot backend. |
+| Domain | `activateyourscampage.com` | Referenced in the kit's redirect fallback logic. Confirmed live (2026-09-18): JWT ("Joken")-based "Loading..." bounce page, registered 2021-11-12 — likely a long-running shared anti-bot/traffic-filtering service used across many unrelated kits, not specific to this campaign. |
+| CDN (mirrored, legitimate) | `cdn1.onlineaccess1.com` | Real Q2 Software "Tecton" online-banking-engine CDN — both kits mirror the bank's actual production login page assets from here, not re-hosted |
+
+---
+
+## Delivery / hosting
+
+```
+fdichelpsupport.com   138.197.128.232   (registered 2026-09-17T22:59:06Z, registrar Hostinger operations UAB, nameservers atlas.dns-parking.com / hyperion.dns-parking.com; open directory listing, HTTP 200 at analysis time)
+```
+
+urlscan.io submission (authorized, 2026-09-18): uuid
+`01a0b4b9-4cea-704a-8b78-b4284fe2fbb2`, malicious=False score=0, HTTP
+200, IP `138.197.128.232` — hit the open-directory listing itself (the
+real lure pages require fetching individual kit paths directly).
+
+---
+
+## Impersonated brands
+
+```
+First United Bank   -> firstunitedbank.com (real bank; victim redirected here post-capture)
+Texans Credit Union  -> my.texanscu.org (real credit union; victim redirected here post-capture)
+```
+
+---
+
+## TTPs
+
+- Cloaking-free but heavily anti-bot-gated funnel: sophisticated
+  client+server anti-analysis layer (WebDriver, battery-API laptop
+  detection, VR-display-API repurposed as VM/RDP detector, DoNotTrack,
+  cookie requirement, hosting-ASN/Tor/VPN IP blocking, blank-UA
+  blocking, legacy-Windows-version blocking) gates access before any
+  lure page is shown.
+- "Double login" capture: identical login form shown twice in a row to
+  increase confidence at least one submitted credential pair is
+  typo-free, and to generate two separate exfiltration events per
+  victim.
+- Real online-banking platform mirrored (not hand-built): both login
+  pages pull CSS/JS/logo assets live from the bank's actual production
+  CDN (Q2 Software "Tecton" engine) rather than re-hosting fake copies
+  — visually indistinguishable from the genuine login flow.
+- Decoy sitemap.xml (`FakeSitemap.php`) pointing only at an innocuous
+  "under construction" placeholder page — anti-scanner camouflage.
+- Post-capture redirect to the REAL bank website after a 6-second fake
+  "success" page — delays victim suspicion.
+- Shared kit framework / licensing model: identical backend and
+  hardcoded buyer handle across two unrelated bank-brand deployments —
+  consistent with a "scam-page-as-a-service" seller distributing a
+  templated kit to (at least) one buyer running multiple brands.
+
+---
+
+## Cross-kit correlation / forensic note
+
+`First United Bank/processing/done_files/` contains
+`truist-logo-188x44.png` and a Truist Bank-branded JS bundle — leftover
+artifacts from a scraping tool or shared asset cache previously
+pointed at Truist Bank's site, not fully cleaned before this kit was
+repackaged under the First United Bank brand. Minor opsec lapse by the
+kit builder/seller, not evidence Truist Bank itself is targeted by
+this specific deployment.
+
+---
+
+## MITRE ATT&CK mapping
+
+- T1566 — Phishing (credential-harvesting login-page clone)
+- T1656 — Impersonation of legitimate organization (First United Bank, Texans Credit Union, FDIC-themed delivery domain)
+- T1111 — Multi-Factor Authentication Interception (OTP/2FA code capture step)
+- T1497 — Defense Evasion (WebDriver/VM/sandbox detection, DoNotTrack/cookie checks, decoy sitemap)
+- T1584.004 — Compromised/rented infrastructure (open-directory delivery host)
+- T1567 — Exfiltration Over Web Service (live Telegram Bot API exfiltration)
+
+---
+
+*Report generated from static analysis of a Matrix-crawled kit archive
+plus live HTTP/RDAP/DNS checks and urlscan.io submission. Full write-up:
+Matrix workspace `analysis/fdichelpsupport-bank-phish_20260918/`.*

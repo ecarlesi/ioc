@@ -67,6 +67,10 @@
   ],
   "reports": [
     {
+      "file": "reports/fdichelpsupport.com-bank-phish.txt",
+      "name": "fdichelpsupport.com-bank-phish"
+    },
+    {
       "file": "reports/inicio-verificacao.online-cpn16set.txt",
       "name": "inicio-verificacao.online-cpn16set"
     },
