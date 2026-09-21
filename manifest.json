@@ -67,6 +67,10 @@
   ],
   "reports": [
     {
+      "file": "reports/zoom4usinvite.space-dropper.txt",
+      "name": "zoom4usinvite.space-dropper"
+    },
+    {
       "file": "reports/fdichelpsupport.com-bank-phish.txt",
       "name": "fdichelpsupport.com-bank-phish"
     },

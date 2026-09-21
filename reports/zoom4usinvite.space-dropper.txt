@@ -1,0 +1,126 @@
+# IoC Report — zoom4usinvite.space multi-campaign dropper platform
+**Date:** 2026-09-21
+**Kit:** 9 simultaneous campaigns from a single open-directory staging server
+**Hosts:** zoom4usinvite.space (138.68.9.65, DigitalOcean) + vistejet.com (actor cPanel)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+Matrix flagged zoom4usinvite.space. Static analysis (125 MB exposed at root +
+42 MB backup ZIP left world-readable the day before the crawl) reveals a single
+Nigerian-origin threat actor running 9 simultaneous delivery campaigns from two
+hosting accounts: zoom4usinvite.space (DigitalOcean) and vistejet.com
+(actor-owned cPanel, username "vistejet", Cloudflare-fronted).
+
+Nigerian-origin fingerprint: Zoom kit PHP anti-bot engine explicitly whitelists
+MTN, Glo, Airtel, 9mobile while blocking all cloud ASNs; 57 development log
+entries all originate from Lagos Nigeria MTN egress IPs (Jul 2025); development
+payload name was "PornTube.msi". 5 of 7 embedded Telegram bot tokens confirmed
+live at analysis time. No real victim PII found.
+
+Campaigns: (1) Zoom credential phish, (2) Adobe/ClickFix RMM dropper (BAT
+double-B64 PS + HTA MR.X V4 GOLD crypter), (3) SSA phish + EXE/cred steal,
+(4) VistaJet lure -> EXE, (5) Paperless Post -> FleetDeck RMM agent,
+(6) Google AiTM real-time OTP relay (2FA bypass), (7) Gmail Live Panel
+(variant of #6 + phone capture), (8) Xfinity/Comcast ATO kit (password +
+card + SSN), (9) Adobe/Paperless dual-brand multi-email-provider cred harvest.
+
+Full write-up: analysis/zoom4usinvite-space-dropper_20260921/
+Blog: carlesi.vg post ID 1892.
+
+---
+
+## Hosting / delivery
+
+zoom4usinvite.space   138.68.9.65          DigitalOcean staging host
+vistejet.com          172.67.177.124        actor cPanel (Cloudflare edge)
+                      104.21.75.143         actor cPanel (Cloudflare edge)
+chestifer.com                               ScreenConnect C2, Aug 2026
+
+---
+
+## Telegram bot tokens (all kits)
+
+5351677388:AAFExtOHa0ry4JtOf-T5llc7R2yOEzq8JBc  @Eaizi_bot           -604985009  Zoom Android+Windows  LIVE
+7932019343:AAGmtLgFgfrGPokBuDAcdtvVU79ZPar8YYY  (revoked)             5045787067  Zoom iPhone           DEAD
+8673947383:AAGDINpOsEOsb-wvjAn3oWUkTpzyBvVfkx8  @systembott           7113391964  Zoom standalone       DEAD
+7885145201:AAF9pQFxFFH2cRJOYSFavHfh99inaQb4nYU  @Staypaid2405_bot     8629219805  Adobe/Paperless       LIVE
+8900224358:AAG3LTnq2L3We4a6UphkKtSDiQvBB-wmiNw  @livepanelenergy_bot  5240875931  FleetDeck dropper     LIVE
+6618890318:AAFEFmAcIun2AoCYqP1QqOGmecs_RrRXJfA  @Bigwavelogs_bot      7128600214  Google AiTM + Gmail   LIVE
+8866603639:AAGYAFpUF3H6A3byr6tr-zOBN2bGH1DIQX4  @LOGSWAVES_bot        7128600214  Xfinity ATO           LIVE
+
+---
+
+## C2 / RMM servers
+
+31.57.147.213                              ScreenConnect C2 #1 (current HTA)
+80.76.49.228                               ScreenConnect C2 #2 (current HTA)
+chestifer.com                              ScreenConnect C2 domain (older HTA, Aug 2026)
+faas-tor1-70ca848e.doserverless.co         DigitalOcean serverless MSI delivery
+fleetdeck.io                               FleetDeck RMM control plane
+
+---
+
+## Payload URLs
+
+https://faas-tor1-70ca848e.doserverless.co/api/v1/web/fn-31b0c5c0-f94a-4109-b5ed-ad279d4582dd/gov/reader
+http://31.57.147.213/Bin/ScreenConnect.ClientSetup.msi?e=Access&y=Guest
+http://80.76.49.228/Bin/ScreenConnect.ClientSetup.msi?e=Access&y=Guest
+http://chestifer.com/Bin/ScreenConnect.ClientSetup.msi?e=Access&y=Guest
+https://github.com/TheyCallMeKing911/AdObee/releases/download/woof/Zoom_Updater.zip
+https://github.com/Drealplug/ssa/raw/refs/heads/main/Statement.exe
+https://vistejet.com/vistejet/Invitecard.exe
+https://vistejet.com/k/download_invitee.php
+
+---
+
+## Binary hashes
+
+special_invitation.exe  (FleetDeck agent Go binary, 4.3 MB)
+  MD5:    fa02c783061b979419a4fa42adb8234b
+  SHA256: 8f72fb281b388cbaa7ecdfaf6b16bf80247bf0e6a92daf5077ad7cd4f3aaeff2
+
+ADobeINSTALL.bat  (double-B64 PowerShell dropper)
+  MD5:    81368a6d0c7b26d3488dfd0d4bba6390
+  SHA256: c0a728159db3b0ae20d09c4ef2074ed7dcb0176726c29590f82a6ef28f15f81c
+
+---
+
+## MR.X V4 GOLD HTA crypter keys
+
+AdobReader.hta    key: 9yvk05jNj3l5tjOB   Sep 2026  C2: 31.57.147.213 + 80.76.49.228
+Adobe-Updater.hta key: TlSRDeYcZh685Zfa   Aug 2026  C2: chestifer.com
+
+---
+
+## Developer attribution (@xforgex) — campaigns 6-8
+
+Telegram:        @xforgex
+Gmail:           xforgexcoder@gmail.com
+IPinfo token:    5a8ce2984c7007
+cPanel username: vistejet
+
+---
+
+## Operator-origin IPs (kit dev logs — not victim data)
+
+105.113.107.254  Lagos NG  MTN  26 entries  Windows/downloads.log  2025-07-21
+105.113.63.183   Lagos NG  MTN  10 entries  Windows/downloads.log  2025-07-21
+102.88.104.137   Lagos NG  MTN  11 entries  Iphone/downloads.log   2025-07-12
+105.113.64.233   Lagos NG  MTN   7 entries  Iphone/downloads.log   2025-07-12
+91.219.238.147   Budapest HU     3 entries
+193.26.115.124   Miami US        2 entries
+
+---
+
+## SSA spam template
+
+From:    docshared-[template]@crmail.com
+Subject: SSA Notice: Updated Social Security Administration Statement - Download And Review Documents
+Mailer:  MaxBulk Mailer (.mmp)
+
+---
+
+*Report from static analysis + live API checks (Telegram, DNS). No victim PII.*
