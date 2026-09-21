@@ -123,4 +123,45 @@ Mailer:  MaxBulk Mailer (.mmp)
 
 ---
 
+---
+
+## Addendum 2026-09-21 — vistejet.com archives
+
+Additional archives crawled from vistejet.com reveal Campaign 10 and new payloads.
+
+### Campaign 10 — Microsoft AiTM OTP relay (login.microsoftonline/)
+
+Full multi-step Microsoft Account AiTM kit cloning login.microsoftonline.com.
+Steps: email -> password -> MFA method (Authenticator or SMS) -> code -> success.
+Real-time Telegram relay with inline keyboard operator control.
+Developer test sessions: xforgexcoder22@gmail.com + xforgexcoder@outlook.com (self-test, no victim PII).
+Bot: 7441120148:AAFZuQn3vvA9nVx1zNs_ghoH7VG3Fq_X71k / chat 1185176021 -- DEAD (401)
+
+### New Telegram tokens (vistejet.com)
+
+8766742931:AAGQAK3svqhrwhGk14lFxO2Eji2-UT2G_Xs   @workmode247_bot   chat 8722485474  Crz Adobe+Google AiTM  LIVE
+8827990755:AAGPVcvDQ28GrZsJZuPy8gqLEHPbwPKv2LA   @Bbuzartbot        chat 8209568296  Crz/k FleetDeck        LIVE
+8719908662:AAH26pRSAzSqnz9Bg7nE7SkjMQzlqXIkhDk   @Connectedwilde_bot chat 8716793906 Crz Adobe lure         LIVE
+7441120148:AAFZuQn3vvA9nVx1zNs_ghoH7VG3Fq_X71k   (revoked)           chat 1185176021 Microsoft AiTM         DEAD
+
+### New FleetDeck agent binaries (all Go PE32, fleetdeck.io/prototype3)
+
+ReaderUpdate_Plugin-agent-Sbnudurb69uUYVdHWsih3M.exe  (vistejet.com/Crz)
+  MD5:    9db57604f2ef4fd627233f9b3170a34f
+  SHA256: b32afecf76a2712a0a8e997b0d7f14643c6ed0879cea09880d58ec590c725410
+
+fleetRSVP_ReaderPlugin.exe  (vistejet.com/Adobe-sharp)
+  MD5:    d118ec234bd23eaad2f96c8333c12960
+  SHA256: a17546f6f06728ec3edaadd9b2b46b275a90f4f2c2533f9e54824984a34c6cb8
+
+AdobeReader_Installer65.exe  (vistejet.com/Crz/A)
+  MD5:    ec3594c77ded0fd0b458fab464e943c5
+  SHA256: 3dc43abce1fefb98478765a10778c8127cd760203a12a5eb6c174f74490154d3
+
+ScreenConnect.ClientSetup.msi  (vistejet.com/Crz/k, created 2026-09-08)
+  MD5:    157b534c4f01b7029b49f93e903ea1d2
+  SHA256: 1d595ef8cb4a237944c1666366c65ff4af5a478469f6a045933deb3749f5bf42
+
+---
+
 *Report from static analysis + live API checks (Telegram, DNS). No victim PII.*
