@@ -101,6 +101,10 @@
     {
       "file": "reports/zhostz.com-invite-viewer-followup.txt",
       "name": "zhostz.com-invite-viewer-followup"
+    },
+    {
+      "file": "reports/wp-pivot-malware-loader.txt",
+      "name": "wp-pivot-malware-loader"
     }
   ]
 }
