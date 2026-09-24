@@ -1,0 +1,126 @@
+# IoC Report — lintal.co (corporacionbi / bestado / UniCaja multi-bank phishing bundle)
+**Date:** 2026-09-24
+**Kits analysed:** three static credential-harvesting kits hosted side by side on the same open directory
+**Host:** lintal.co (live mirror of corporacionbi.org)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+A locally-supplied open-directory dump (originally `corporacionbi.org`)
+was confirmed still live at **lintal.co** (5.189.153.15, Contabo GmbH,
+AS51167, France), serving an identical open-directory listing. The
+directory hosts three frontend-only bank-phishing kits cloning:
+
+- **Banco Industrial** (Guatemala) — "BI En Línea" login clone
+- **BancoEstado** (Chile) — retail login clone, live credential
+  exfiltration (RUT + password sent in clear text via Telegram on
+  every form submit)
+- **Unicaja Banco** (Spain) — retail login clone, POSTs to a
+  `loading.php` backend not present in the dump
+
+Alongside the kits, the same open directory exposes what appears to be
+the operator's own **rooted Android phone backup** (Magisk/KernelSU
+root-hiding and Play Integrity/SafetyNet spoofing modules — TrickyStore,
+PropSpoofer, PlayIntegrityFork — plus the legitimate KernelSU WebUI
+Manager APK), two abnormally large padded Windows .NET executables
+(likely AV-evasion-via-bloat, payload not extracted), several VBS
+scripts (not analysed), and a home-made link-management tool using
+free-tier `jsonblob.com`/`allorigins.win`.
+
+Two Telegram bots power the exfiltration/notification channels, both
+following a "Lux"-branded naming convention (`LuXAC`/`@luxActivoBot`,
+`LuXBot`/`@luxxx066bot`), matching a `luxproject/` directory also
+present on the host (currently HTTP 403, contents unknown).
+
+A text file (`1.txt`) contains a `personalpay.dev` deep link matching
+the naming convention of a previously tracked Telecom Argentina
+"Personal Pay" campaign — actor/tooling overlap flagged but not proven.
+
+Full write-up: Matrix workspace
+`analysis/corporacionbi-luxproject-phish_20260924/`.
+
+---
+
+## Credentials / Secrets (attacker's own — reproduced in full)
+
+| Type | Value | Source |
+|------|-------|--------|
+| Telegram bot token | `8848041970:AAFZJBhArTpC61CQH1Oh1_sUeysaXj1THvk` | `corporacionbi/index.html` — bot `@luxActivoBot`, webhook set to `hxxps://lintal[.]co/UniCaja/webhook.php` |
+| Telegram chat ID | `-1003832047019` | `corporacionbi/index.html` |
+| Telegram bot token | `8551809504:AAETvamsUKYoXFPXYyLzjq1p6eChErA4Ipk` | `bestado/index.html` — bot `@luxxx066bot`, no webhook, `getUpdates` queue empty |
+| Telegram chat ID | `-5130408446` | `bestado/index.html` |
+
+---
+
+## Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| Domain | `lintal.co` | Live delivery/staging host, Contabo GmbH AS51167 FR |
+| Domain | `corporacionbi.org` | Original dump source domain, IPv6-only (`2a06:98c1:3120::7`/`::3121::7`), likely CDN front |
+| IP | `5.189.153.15` | `lintal.co` A record |
+| URL | `https://lintal.co/corporacionbi/` | Banco Industrial phishing kit |
+| URL | `https://lintal.co/bestado/` | BancoEstado phishing kit |
+| URL | `https://lintal.co/UniCaja/` | Unicaja Banco phishing kit |
+| URL | `https://lintal.co/UniCaja/webhook.php` | Live server-side webhook for `@luxActivoBot` |
+| URL | `https://lintal.co/luxproject/` | HTTP 403, contents unknown |
+| URL | `https://deeplinkpage.prod.personalpay.dev/?usecase=signup&verification_code=154810a564152de445c798f4&login_hint=719047fa-97fa-4929-80af-5e6c35edf094` | Found in `1.txt`; matches naming convention of a separately tracked Personal Pay (Telecom Argentina) campaign |
+| Hash (MD5) | `93c422b73eb4dc0f24746348589498e6` | `CheckDefender.exe`, 36MB padded .NET executable |
+| Hash (MD5) | `7f5dca264993a636a25b21fe1b87ccde` | `2putty.exe_portable.exe`, 51MB padded .NET executable |
+
+---
+
+## Impersonated brands
+
+```
+Banco Industrial (Guatemala)  -> corporacionbi.com (real bank)
+BancoEstado (Chile)           -> www.bancoestado.cl (real bank)
+Unicaja Banco (Spain)         -> www.unicajabanco.es (real bank)
+```
+
+---
+
+## TTPs
+
+- Frontend-only credential-harvesting login clones, no shared backend
+  framework between the three kits (unlike some "kit-as-a-service"
+  bundles seen elsewhere) — each brand has its own bespoke HTML/JS.
+- Live client-side Telegram Bot API exfiltration for the BancoEstado
+  kit: RUT + password captured directly from the DOM and POSTed in
+  clear text on every login-form submit, plus visitor IP/geolocation
+  via `ip-api.com`.
+- Server-side webhook-based processing for the Banco Industrial/
+  UniCaja bots — credential capture happens on the operator's own
+  `lintal.co` host rather than purely client-side.
+- Multi-step funnel implied but not fully captured in this snapshot:
+  the BancoEstado kit redirects to a `verify.html` (likely OTP/2FA
+  capture) that was not present in the dump.
+- Suspected AV size-heuristic evasion via padded .NET single-file
+  executables (36MB/51MB) — payload not extracted, no strings/C2
+  recovered.
+- Operator's personal rooted-Android backup (root-hiding/Play
+  Integrity spoofing tooling) stored on the same open directory as the
+  phishing kits — an OPSEC lapse exposing the operator's own device
+  posture, not malware aimed at victims.
+
+---
+
+## MITRE ATT&CK mapping
+
+- T1566 — Phishing (credential-harvesting login-page clones)
+- T1656 — Impersonation of legitimate organization (three distinct
+  bank brands)
+- T1111 — Multi-Factor Authentication Interception (implied by the
+  BancoEstado kit's `verify.html` redirect target)
+- T1567 — Exfiltration Over Web Service (live Telegram Bot API)
+- T1584.004/T1584.006 — Compromised/rented infrastructure (open
+  directory on Contabo VPS)
+- T1027 — Obfuscated/padded files to evade size-based AV heuristics
+
+---
+
+*Report generated from static analysis of a locally-supplied open-directory
+dump plus live HTTP and Telegram Bot API checks. Full write-up: Matrix
+workspace `analysis/corporacionbi-luxproject-phish_20260924/`.*

@@ -105,6 +105,11 @@
     {
       "file": "reports/wp-pivot-malware-loader.txt",
       "name": "wp-pivot-malware-loader"
+    },
+    {
+      "file": "reports/lintal.co-corporacionbi-luxproject.txt",
+      "name": "lintal.co-corporacionbi-luxproject"
     }
+
   ]
 }
