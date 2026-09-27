@@ -1,0 +1,198 @@
+# IoC Report — asddtymi15uuhuhui1sosnistratr.com (fake SSA statement tech-support scam / RMM abuse)
+**Date:** 2026-09-27
+**Kit analysed:** "fake SSA statement" lead-generation kit impersonating the US Social Security Administration
+**Host:** asddtymi15uuhuhui1sosnistratr.com (kit archive: hxxps://asddtymi15uuhuhui1sosnistratr[.]com/wolwr/estate1wmqent.zip)
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+A randomized-string domain, registered one day before discovery via
+Ultahost, Inc. (Cloudflare nameservers), serves an open directory
+(LiteSpeed autoindex) hosting a **fake US Social Security
+Administration (SSA) "secure document" lead-generation kit**. Unlike
+classic credential-phishing kits, this one is a funnel toward
+**abuse of legitimate remote-access/RMM software**: after a CAPTCHA
+gate and a Windows-only filter, victims are served a genuine,
+digitally-identifiable **RemotePC Host installer (IDrive Inc.)** as
+the "secure document" download. A separate `Links.txt` file contains
+755 pre-generated session-join URLs for a **self-hosted ConnectWise
+ScreenConnect relay**, almost certainly used during a companion
+phone-based "tech support" social-engineering call.
+
+The domain hosts **both the raw kit archive AND a live, currently
+running deployment** of the same kit (directory last-modified AFTER
+the archive's own upload timestamp) — confirming this is an actively
+staged, not abandoned, delivery host. The live deployment's payload
+(a different RemotePC Host build/hash than the archived copy) shows
+the operator periodically refreshes the abused installer with a
+current copy of the legitimate IDrive product.
+
+Every visit is logged (IP, geolocation, OS, browser, timestamp) and
+pushed live to a Telegram bot; the bot's own webhook configuration
+(discovered via the Telegram API, not present in any kit file) points
+to a second, previously-unknown SSA-impersonation domain,
+`ssa-gov.es`, revealing a more complete backend application behind
+the flat PHP front-door kit analysed here.
+
+Full write-up: Matrix workspace
+`analysis/ssa-getmyssafile-tech-support-scam_20260927/`.
+
+---
+
+## Credentials / Secrets (attacker's own — reproduced in full)
+
+| Type | Value | Source |
+|------|-------|--------|
+| Telegram bot token | `8380366303:AAGK351gwB1UfN7GLHbq6s1PsDDjdnW_QtA` | `config/settings.php` — bot `@s1s1a2_bot` ("ssa_bot"), confirmed live |
+| Telegram chat ID | `2097071074` | `config/settings.php` |
+| Operator handle | `Quartz` | Discord webhook POST `username`; tagged throughout the older `clicks3.txt`/live `clicks.txt` visit logs (Aug-Oct 2024 batch) |
+| Operator handle | `error_new25` | `config/settings.php` `$UserName`; tagged throughout the local dump's `clicks.txt` (Jan 2026 batch) |
+
+---
+
+## Network Indicators
+
+| Type | Value | Role |
+|------|-------|------|
+| Domain | `asddtymi15uuhuhui1sosnistratr.com` | **Live delivery/staging host** — open directory + currently-running kit deployment. Registered 2026-09-26 via Ultahost, Inc.; Cloudflare NS (`eoin.ns.cloudflare.com`, `nola.ns.cloudflare.com`); resolves to Cloudflare IPv6 `2606:4700:3034::6815:4e93` / `::ac43:df06`. **Highest-priority takedown target.** |
+| URL | `hxxps://asddtymi15uuhuhui1sosnistratr[.]com/wolwr/estate1wmqent.zip` | Raw kit archive, 58,730 KB, confirmed live 2026-09-27 |
+| URL | `hxxps://asddtymi15uuhuhui1sosnistratr[.]com/wolwr/stfatewme2ntq/sss/` | Live, currently-deployed copy of the same kit (dir modified 2026-09-26 16:56, after the zip's own upload) |
+| Domain | `getmyssafile[.]com` | Original hosting domain for a separate deployment of this kit (identified from `error_log` cPanel path `/home/getmyssafile/public_html/`). NXDOMAIN at analysis time (retired). |
+| Domain | `ssa-gov[.]es` | Second SSA-impersonation domain; discovered as the live Telegram-bot webhook backend (`hxxps://ssa-gov[.]es/Home/?action=tg_webhook`, IP `188.114.96.0`, Cloudflare anycast). Cloudflare "Just a moment..." JS-challenge-gated at check time. |
+| Domain | `primecircuittech.com` | Self-hosted ConnectWise ScreenConnect relay, port 8041. Registered 2025-10-04 via Tucows Domains Inc.; Njalla nameservers (`1-you.njalla.no`, `2-can.njalla.in`, `3-get.njalla.fo`); resolves to `31.57.201.87` (AS40662 Layer7 Technologies Inc, Netherlands). Connection timeout on 443/8041 at check time. |
+| URL pattern | `hxxps://primecircuittech[.]com/Bin/ssa-statement2457517540.Client.exe?h=...&p=8041&k=...&s=<session-uuid>&e=Support&y=Guest` | ConnectWise ScreenConnect one-click session-join URL grammar; 755 pre-generated instances in `Links.txt` (2 filename variants) |
+| reCAPTCHA sitekey | `6LezxQosAAAAANni6JXLqL77z725K-VDjjJ-afER` (local dump) / `6LdHmdAtAAAAACbxQZ8UD62F2QA0LKKEoM0nAUhd` (live deployment) | Real Google reCAPTCHA Enterprise sitekeys used to lend the fake page legitimacy; rotated per deployment |
+
+---
+
+## Payload — legitimate RMM tool abused, not custom malware
+
+| File | Size | MD5 | Notes |
+|------|------|-----|-------|
+| `RemotePCHost_L2mDqFVwRv48etq.exe` | 59,717,360 bytes | `aebe9a2627c9ceaab53a7b07f0e18bfc` | Local dump copy. Genuine RemotePC Host installer, `CompanyName: IDrive Inc`, from embedded VS_VERSION_INFO |
+| `RemotePCHost_lMgbnTcrBzsmbum.exe` | 63,947,368 bytes | `9aaf581cfd406e2f45849a2bb5b6ff8e` | Retrieved live 2026-09-27 from the `asddtymi15uuhuhui1sosnistratr.com` deployment. Also genuine IDrive Inc. RemotePC Host, different build/version — confirms periodic payload refresh from the current official installer rather than a fixed binary |
+
+Both filenames carry a random alphanumeric suffix appended by the
+kit's build/upload tooling — a per-victim/per-campaign tracking token,
+not a content hash. `download_file.php`'s `getRandomFile()` streams
+whatever file is present in the `download/` folder with no
+validation, so the operator can rotate payloads at will.
+
+---
+
+## Impersonated brand
+
+```
+US Social Security Administration (SSA) -> ssa.gov (real government agency)
+```
+
+The kit hotlinks the real `ssa.gov/favicon.ico` and reuses (in
+`assets/js/`) code that closely mirrors `ssa.gov`'s own internal
+front-end framework (`SSA.namespace`, `SSA.fn.uef.*`, Google Analytics
+property `UA-25977386-2`, GTM container `GTM-5GQXH7Q`) — most likely
+lifted wholesale from a scrape/mirror of the real site.
+
+---
+
+## Kill chain
+
+1. `index.php` — SSA-branded "Complete reCAPTCHA" page (real Google
+   reCAPTCHA Enterprise widget). Non-Windows visitors are redirected
+   to `devices.html` before the CAPTCHA resolves.
+2. `devices.html` — "Access Restricted... use a Windows-based system"
+   modal for non-Windows visitors, with right-click/F12/devtools
+   blocking.
+3. `download.php` — "Your SSA Secure Document is Ready" page with a
+   fake progress bar, auto-redirecting to `download_file.php`.
+4. `download_file.php` — streams a random file from `download/`
+   (currently the RemotePC Host installer) as an attachment.
+5. `notify.php`/`main.php` — geolocates every visitor (`ipinfo.io`),
+   logs to a local file, and pushes to a Discord webhook (unconfigured
+   in this snapshot) and a live Telegram bot simultaneously.
+6. `Links.txt` — a parallel, independent vector: 755 pre-generated
+   ConnectWise ScreenConnect session-join URLs for live remote-support
+   sessions with victims, presumably driven during a phone call.
+
+---
+
+## Victim telemetry (not republished verbatim)
+
+Combined visit logs across the local dump and the live deployment
+span from **20 August 2024** through at least **11 January 2026** and
+total roughly **88,000 log lines**. The most recent batch
+(`error_new25` tag) is overwhelmingly US-based residential
+Windows 10/Chrome traffic, consistent with an actively reached,
+real-victim US population. No SSNs, names, or financial data are
+captured by this specific front-end component — it is a lead-gate,
+not a data-entry form. Per standard practice, this is noted as
+existing victim telemetry and aggregate-characterized, not
+republished as a raw per-IP list.
+
+---
+
+## TTPs
+
+- Fake-government-document lead-generation funnel with a hard
+  Windows-only gate (mobile/other-OS visitors are diverted before
+  ever reaching the payload).
+- Abuse of a **legitimately signed, commercial RMM/remote-access
+  product** (RemotePC Host by IDrive Inc.) as the "malware" — far
+  harder for signature/hash-based AV to flag than custom malware.
+- Independent **self-hosted ConnectWise ScreenConnect** relay for
+  live remote-support sessions, with a large pre-generated batch of
+  session-join links ready ahead of a calling campaign.
+- Dual-channel live visit telemetry (Discord webhook + Telegram bot)
+  with operator handle rotation over time (`Quartz` -> `error_new25`)
+  suggesting either a handle change by the same actor or a
+  kit-sharing/reselling model.
+- Payload rotation: the operator periodically re-fetches a fresh copy
+  of the legitimate installer rather than reusing one static binary,
+  likely to avoid accumulating a stable hash/version signature.
+- Reuse of the real ssa.gov front-end JS/analytics framework as
+  camouflage/legitimacy signal.
+- Live infrastructure pivot via the Telegram Bot API: the bot's own
+  webhook configuration exposed a second, previously unknown
+  SSA-impersonation domain not referenced anywhere in the kit's files.
+
+---
+
+## MITRE ATT&CK mapping
+
+- T1566.002 — Phishing: Spearphishing Link
+- T1656 — Impersonation of legitimate organization (US SSA)
+- T1204.002 — User Execution: Malicious File
+- T1219 — Remote Access Software (RemotePC Host, ConnectWise
+  ScreenConnect — legitimate RMM tools abused for fraudulent control)
+- T1583.001/T1583.006 — Acquire Infrastructure: Domains / Web Services
+- T1567 — Exfiltration Over Web Service (Discord webhook + Telegram
+  bot visit telemetry)
+- T1497 — Defense Evasion (Windows-only gate, devtools-blocking,
+  Cloudflare JS challenge on the secondary `ssa-gov.es` backend)
+
+---
+
+## Recommendations
+
+- Report `asddtymi15uuhuhui1sosnistratr.com` to Ultahost, Inc. abuse —
+  confirmed live, actively serving the kit; highest-priority takedown.
+- Report `primecircuittech.com` to Tucows Domains Inc. abuse and to
+  ConnectWise for the self-hosted ScreenConnect relay abuse.
+- Report `ssa-gov.es` to its registrar (.es TLD) for SSA impersonation.
+- Report the Telegram bot `@s1s1a2_bot` to Telegram's abuse team.
+- Flag the RemotePC Host abuse pattern to IDrive Inc.'s fraud
+  intelligence team (not a product vulnerability).
+- Given confirmed real US victim traffic, consider referral to
+  FTC/FBI IC3 SSA-impersonation scam tracking.
+
+---
+
+*Report generated from static analysis of a Matrix-crawled kit archive
+plus live HTTP/DNS/WHOIS checks, Telegram Bot API checks, and direct
+payload retrieval/identification. Full write-up: Matrix workspace
+`analysis/ssa-getmyssafile-tech-support-scam_20260927/`.*
+
+
+
+
