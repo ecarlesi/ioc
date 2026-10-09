@@ -603,3 +603,4 @@
 7994011782:AAFTeHTHJ-V_EY6IsELJ-R3aCY2i9pQdyE4,https://zoom-meetingsonline.vercel.app
 8639771432:AAHofjx93ovsLW70-rRvyVXM7IU7yrd3LT0,https://zoom-meetingsonline.vercel.app
 7330822154:AAH-OZu1aatQ2VXBgds_jzw3OzxEvy5_psY,https://zoom-meeting-call-eight.vercel.app
+7541685520:AAF52n9neE2wbpdC-wBuiNqTWgZshk-eCc8,https://navaer.net/naverlink.zip
