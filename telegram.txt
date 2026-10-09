@@ -599,3 +599,6 @@
 7726588169:AAFf0MiwRjm5iYHBRfInRzcvNEzC8XpCQyo,https://finanzamt-elster.sbs/aokplay.tgz
 8465020458:AAHvB-fWr0Wtpezm8cfiSDj6WxPccM66-j8,https://finanzamt-elster.sbs/aokplay.tgz
 8433242662:AAGRiZiaUykagOKQF66ftxTRFF9OUfFn6PU,https://businessfiles.cloud/Office.zip
+8575206628:AAF1xu1eqlZQzt8EbdCTICG65a32KpqAFV4,https://zoom-meetingsonline.vercel.app
+7994011782:AAFTeHTHJ-V_EY6IsELJ-R3aCY2i9pQdyE4,https://zoom-meetingsonline.vercel.app
+8639771432:AAHofjx93ovsLW70-rRvyVXM7IU7yrd3LT0,https://zoom-meetingsonline.vercel.app
