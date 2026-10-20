@@ -1,0 +1,104 @@
+# IoC Report — fdsafeguard.org FDIC-impersonation case-portal kit
+**Date:** 2026-10-20
+**Kit:** https://fdsafeguard.org/FDIC.zip (PHP + SQLite, 52 files, SHA-256 18ea6e8b89daf400f94048b5dc6e4fe75ab2818e6be328b7035050e8bf861d00)
+**Host:** fdsafeguard.org (15.235.114.173, LiteSpeed/PHP 8.2), registered 2026-10-19 (OwnRegistrar), NS ns1/ns2.regxa.com
+**Purpose:** Threat-intelligence sharing
+
+---
+
+## Description
+
+Matrix flagged fdsafeguard.org one day after registration as an open directory. The web root exposed the
+full kit source (/FDIC.zip), the SQLite database (/database.sqlite), the admin panel (/administration.php)
+and the Telegram bot token + chat ID in FDIC/config.php.
+
+The kit is a fake FDIC "case portal": the scammer creates a case, gives the victim a case ID (FDIC-XXXXX) and a
+temporary password (Fdic#<date suffix>); the victim logs in, sees a fake account with a balance, transfers,
+payees, a card-shipment tracker and a map "pickup" with an authorisation code, then is asked for full name,
+date of birth, SSN (the form requires 10 digits), phone, address and a front/back photo of an ID.
+The operator drives everything from a Telegram bot (create/edit cases, accounts, activities, resend
+credentials, e-mails) and from an admin web panel. It reads as an advance-fee / identity-theft scam; the lure
+(e-mail/SMS/phone) was not seen.
+
+State at analysis time: the database had 0 users, 0 cases, 0 uploaded documents (live copy identical to the
+dump). No victim PII found. Bot confirmed live on 2026-10-20 (getMe + getWebhookInfo only).
+
+Full write-up: analysis/fdsafeguard-fdic-phish_20261020/ . Blog: carlesi.vg draft 1959.
+urlscan: 01a159b9-58e8-708c-a348-f872ccba4d16 (/), 01a159b9-62a0-74f5-9aae-1d17bc6bb881 (/administration.php).
+
+---
+
+## Telegram
+
+6976278104:AAEXvDUTPda4qzcagwhObuih1oJgar13wqI   @Webmail_us_bot ("Webmail_bot")   chat 5669994273   LIVE 2026-10-20
+Webhook: https://fdsafeguard.org/telegram_webhook.php (peer IP 15.235.114.173, 0 pending updates)
+The bot name does not match the FDIC theme: it may have been created for an earlier webmail scam (inference).
+
+## Credentials / keys hard-coded in FDIC/config.php
+
+Default admin:      admin@fdic.gov / SecureAdminPass123!   (display name "Sarah Jenkins")
+OpenStreet API key: cb1_4nnm_1_753014eedd8ed4e24c39883d
+Cloudinary account: dknq4cmnb (FDIC logo + institutions list)
+Institutions JSON:  https://res.cloudinary.com/dknq4cmnb/raw/upload/v1774260600/institutions_vvwy9q.json
+Session cookie:     fdic_session
+
+## Fake representatives (seeded in the database; fictional personas)
+
+Eleanor Vance   Personal Banker, VP   e.vance@fdicsg.com   +1 (888) 378-4523   badge EV-235453645363
+Cole Ryder      Case Manager          cryder@fdic.gov (spoofed real FDIC domain)   +1 (877) 275-3342   badge 235453645363
+Lookalike domain: fdicsg.com (not resolved/checked)
+
+## Network indicators
+
+fdsafeguard.org            15.235.114.173      LiteSpeed, PHP/8.2.33, no AAAA
+ns1.regxa.com, ns2.regxa.com
+MX: fdsafeguard.org        SPF: v=spf1 +a +mx +ip4:15.235.114.173 ~all
+TLS: wildcard *.fdsafeguard.org, Let's Encrypt YR2, 2026-10-19 to 2027-01-17,
+     SHA-256 BA:CC:7B:7D:E4:91:BC:28:94:5A:39:CF:9D:C5:3F:3A:A2:FB:C4:EB:FD:BE:4C:73:B4:A4:A4:6B:9C:72:E5:EF
+
+## URLs / endpoints
+
+https://fdsafeguard.org/FDIC.zip
+https://fdsafeguard.org/database.sqlite
+https://fdsafeguard.org/administration.php
+https://fdsafeguard.org/telegram_webhook.php
+/api/auth.php?action=user_login  /api/submit_claim.php  /api/upload_id.php  /api/transfer.php
+/api/add_payee.php  /api/schedule_call.php  /api/get_case.php  /api/admin/*  /telegram_setup.php  /Antibot/
+
+## File hashes (SHA-256)
+
+18ea6e8b89daf400f94048b5dc6e4fe75ab2818e6be328b7035050e8bf861d00  FDIC.zip
+97fc80c6388b77600a45772b1d0abdd3c404a1d2b018219fa453093b9f7684e1  database.sqlite
+dd6b5c418e255af75ebdc775b8d09670d6b747ae9b698fe9d42d321f85e4f42b  administration.php
+e31664e561e9bfb0af8a4ec94a0b1ade39d7fb8f083081edd626599c270f7ecd  FDIC/index.php
+91152dcdc1a9bb698f65665f9258ec4d0bfed01414752cb3c99ccff8234cca59  FDIC/config.php
+0e1992989bf1964600c92fe49c14130d06bb56b875286f37ee6a138ca780bb83  FDIC/telegram_webhook.php
+a73b8e8b0ca4f632655aea95427d419f85a5a56d8c608b4a7fc0322bf4264bef  FDIC/Antibot/blocker.php
+65550d9c52c994219b1fea22f53659cf5ea1d2d784b9c3dfc4b607c432750138  FDIC/Antibot/pro.php
+cfe97e44607fe78e19af16a0f6d65578c21393ca8884d3c4c22aceb0601faff4  FDIC/Antibot/blacklist.dat (1,822 lines)
+11b7dc022d02e278f3e3ce938c0dd9b6be3280790ebb17b016438370d112c34a  FDIC/assets/portal.js
+a131e2db1f1e1d910ed922902193840cbd6c473451959295f6d426c44856f118  FDIC/assets/admin.js
+
+## Anti-detection (generic antibot pack, reused across kits)
+
+User-Agent regex (bot|crawler|spider|facebook|alexa|twitter|curl|office|microsft) -> HTTP 500; reverse-DNS word
+list (google, amazonaws, softlayer, cyveillance, phishtank, dreamhost, calyxinstitute, tor-exit, paypal ...);
+banned IP regexes and ISP names (Linode, GoDaddy, Flokinet ...); blacklist.dat; blocked visitors get a fake 404
+or https://www.google.com/404. Files: Antibot/{blocker,blocker_1..4,pro,index}.php, blacklist.dat, whitelist.dat, cf.css.
+
+## Unconfirmed leads (NOT the same operator unless proven)
+
+Same IP 15.235.114.173 / same regxa.com NS + SPF template: udsym.com, nicolacorazonfuerte.org, datrconboard.com,
+farneil.com, mesitos.com, basfgroupsltd.com, portalacordos.xyz, itsme44.xyz, desihubplaystore.xyz and others.
+One GET each showed unrelated pages and no kit. FDIC-lookalike NRD names in 2026 (names only): fdicsafety.*,
+fdicsafeguard.*, fdic-safeguard.*, fdic-safe.org, fdicsafe.us, fdicsafekeeping.com, fdicsafeguarded.*.
+
+## TTPs (MITRE ATT&CK, analyst judgement)
+
+T1583.001 domains, T1587.001 custom kit, T1566 phishing (channel unknown), T1036 masquerading (FDIC brand,
+spoofed fdic.gov sender), T1056.003 web portal capture (SSN, DOB, address, ID photos), T1102 web service
+(Telegram Bot API as C2).
+
+---
+
+*Report from static analysis + live checks (DNS/HTTP, Telegram getMe/getWebhookInfo, urlscan). No victim PII found.*
