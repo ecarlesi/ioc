@@ -1,0 +1,30 @@
+# chancegagne.xyz - Belgian "Tentez votre chance" bank-card phishing kit backup (2026-10-21)
+
+Drop host serving bnp.zip, the full backup (5,081 entries) of a phishing kit: gift-box game ("BNP - Programme de Fidelite",
+"win up to 4 679 EUR") that collects name, phone, e-mail, card number + expiry, then an operator drives the victim through
+bank pages (Belfius, BNP Paribas Fortis, ING, KBC/CBC, Crelan, Argenta, Beobank: 3-D Secure, card reader, itsme, SMS)
+via an admin panel; every step is sent to Telegram. Victim data present in the backup (not reproduced here).
+
+## Domains / IP
+chancegagne.xyz          (registered 2026-10-21 16:41 UTC, Spaceship; A 66.29.148.141; serves only /bnp.zip)
+magiftbox.fun            (kit domain bnp.magiftbox.fun, Sep 2026; NXDOMAIN)
+chanceexpress.site       (bel.chanceexpress.site, Mar 2026; NXDOMAIN)
+votregain.fun            ("Belfius Game", Feb-Sep 2026; NXDOMAIN)
+66.29.148.141
+
+## Telegram
+bot token: 8874115065:AAE9IEXGujnlYZi9Vhuy_NRWX8s2MMLa7Yw  (not live-checked)
+chat id:   -5464407151
+
+## Panel secrets
+ADMIN_PASSWORD me123 ; BLOCKED_IPS_PASSWORD 123me
+Facebook pixels 1049958851133666, 2158808198175685
+Facebook link: https://www.facebook.com/profile.php?id=61575aboribori686telegramme
+
+## SHA-256
+d8cf71765faf281afa0aa8325a84fdf2a74b0227bc087212fbd1e2fc1e8cdd4d  bnp.zip
+547843ca0eced84d749a4a339ce0d5882c2d5c38cfb32a4775cfea00febeb9ac  banks/banks.zip
+
+## Paths
+/bnp/index.php /bnp/submit.php /bnp/loading.php /bnp/admin_panel.php /bnp/panellive.php /bnp/get_data.php /bnp/banks/*.php
+Operator command format: REDIRECT_TO:banks/<page>|CODE1:<x>|CODE2:<y> ; state WAITING_FOR_ADMIN

@@ -87,6 +87,10 @@
       "name": "centerhome.web.id"
     },
     {
+      "file": "reports/chancegagne.xyz-be-banks-phish.txt",
+      "name": "chancegagne.xyz-be-banks-phish"
+    },
+    {
       "file": "reports/fdichelpsupport.com-bank-phish.txt",
       "name": "fdichelpsupport.com-bank-phish"
     },

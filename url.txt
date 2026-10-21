@@ -53,3 +53,6 @@ https://bionicava.sbs/admin/DOCUMENTS_PACKAGE(67174).zip,bionicava.sbs-dhl-logme
 https://bionicava.sbs/dhl/docunewvv.zip,bionicava.sbs-dhl-logmein-rmm
 https://bionicava.sbs/dp/dpack_fresh.zip,bionicava.sbs-dhl-logmein-rmm
 https://bionicava.sbs/abcdefjhijklmno/apps.html,bionicava.sbs-dhl-logmein-rmm
+https://chancegagne.xyz/bnp.zip,chancegagne.xyz-be-banks-phish
+https://chancegagne.xyz/bnp/submit.php,chancegagne.xyz-be-banks-phish
+https://chancegagne.xyz/bnp/admin_panel.php,chancegagne.xyz-be-banks-phish
