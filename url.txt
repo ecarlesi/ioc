@@ -49,3 +49,7 @@ https://fdsafeguard.org/api/submit_claim.php,https://fdsafeguard.org/FDIC.zip
 https://fdsafeguard.org/api/upload_id.php,https://fdsafeguard.org/FDIC.zip
 
 
+https://bionicava.sbs/admin/DOCUMENTS_PACKAGE(67174).zip,bionicava.sbs-dhl-logmein-rmm
+https://bionicava.sbs/dhl/docunewvv.zip,bionicava.sbs-dhl-logmein-rmm
+https://bionicava.sbs/dp/dpack_fresh.zip,bionicava.sbs-dhl-logmein-rmm
+https://bionicava.sbs/abcdefjhijklmno/apps.html,bionicava.sbs-dhl-logmein-rmm

@@ -67,58 +67,60 @@
   ],
   "reports": [
     {
-      "file": "reports/zoom4usinvite.space-dropper.txt",
-      "name": "zoom4usinvite.space-dropper"
-    },
-    {
-      "file": "reports/fdichelpsupport.com-bank-phish.txt",
-      "name": "fdichelpsupport.com-bank-phish"
-    },
-    {
-      "file": "reports/inicio-verificacao.online-cpn16set.txt",
-      "name": "inicio-verificacao.online-cpn16set"
-    },
-    {
-      "file": "reports/simulecxtcontrate.web.id.txt",
-      "name": "simulecxtcontrate.web.id"
-    },
-    {
-      "file": "reports/centerhome.web.id.txt",
-      "name": "centerhome.web.id"
+      "file": "reports/asddtymi15uuhuhui1sosnistratr.com-ssa-scam.txt",
+      "name": "asddtymi15uuhuhui1sosnistratr.com-ssa-scam"
     },
     {
       "file": "reports/behpardakht-mellat-pay.txt",
       "name": "behpardakht-mellat-pay"
     },
     {
+      "file": "reports/bionicava.sbs-dhl-logmein-rmm.txt",
+      "name": "bionicava.sbs-dhl-logmein-rmm"
+    },
+    {
       "file": "reports/cebraspe.cfd.txt",
       "name": "cebraspe.cfd"
+    },
+    {
+      "file": "reports/centerhome.web.id.txt",
+      "name": "centerhome.web.id"
+    },
+    {
+      "file": "reports/fdichelpsupport.com-bank-phish.txt",
+      "name": "fdichelpsupport.com-bank-phish"
+    },
+    {
+      "file": "reports/fdsafeguard.org-fdic-case-portal.txt",
+      "name": "fdsafeguard.org-fdic-case-portal"
     },
     {
       "file": "reports/globalfinassist.com-crediabank.txt",
       "name": "globalfinassist.com-crediabank"
     },
     {
-      "file": "reports/zhostz.com-invite-viewer-followup.txt",
-      "name": "zhostz.com-invite-viewer-followup"
-    },
-    {
-      "file": "reports/wp-pivot-malware-loader.txt",
-      "name": "wp-pivot-malware-loader"
+      "file": "reports/inicio-verificacao.online-cpn16set.txt",
+      "name": "inicio-verificacao.online-cpn16set"
     },
     {
       "file": "reports/lintal.co-corporacionbi-luxproject.txt",
       "name": "lintal.co-corporacionbi-luxproject"
     },
     {
-      "file": "reports/asddtymi15uuhuhui1sosnistratr.com-ssa-scam.txt",
-      "name": "asddtymi15uuhuhui1sosnistratr.com-ssa-scam"
+      "file": "reports/simulecxtcontrate.web.id.txt",
+      "name": "simulecxtcontrate.web.id"
     },
     {
-      "file": "reports/fdsafeguard.org-fdic-case-portal.txt",
-      "name": "fdsafeguard.org-fdic-case-portal"
+      "file": "reports/wp-pivot-malware-loader.txt",
+      "name": "wp-pivot-malware-loader"
+    },
+    {
+      "file": "reports/zhostz.com-invite-viewer-followup.txt",
+      "name": "zhostz.com-invite-viewer-followup"
+    },
+    {
+      "file": "reports/zoom4usinvite.space-dropper.txt",
+      "name": "zoom4usinvite.space-dropper"
     }
-
-
   ]
 }

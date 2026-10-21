@@ -1,0 +1,39 @@
+# bionicava.sbs - DHL lure delivering an attacker-enrolled LogMeIn/GoTo Resolve RMM (2026-10-21)
+
+Open directory, Cloudflare-fronted. A fake "document download portal" auto-downloads a ZIP of
+identical VBS launchers (BILLS_*, COMMERCIAL_INVOICE_*, PACKING_LIST_DHL_*, CUSTOM_REFERENCE_CERTIFICATES_*,
+AIR_WAY_BILL_*). Each finds the ZIP, runs UdhG5K\setup.vbs, which asks for UAC (shown as "Command Processor")
+and runs: msiexec /i LogMeInResolve_Unattended.msi /quiet /norestart  -> GoTo Resolve unattended agent
+enrolled to the attacker's tenant. Decoy: z.pdf (real-looking DHL waybill).
+
+## Domains
+bionicava.sbs                  (delivery; registered 2026-10-20, NameSilo, Cloudflare)
+homeslifestylewaglin.sbs       (mobile redirect /?e46d5477/; registered 2026-10-21, NameCheap, Cloudflare)
+frost-wingeloyerlover.sbs      (email-harvest redirect /?9de54ac3/<email>; Cloudflare, HTTP 520 on 2026-10-21)
+
+## GoTo Resolve attacker tenants (config embedded in the signed MSI)
+CompanyId 4808362719215188725  (created 2026-10-19 12:31 UTC)  publickey 3b5c5ee89e85781e189ac3bc0f16a7ed821054dcbc1da54d218c6ad31931b63b
+CompanyId 7536871190824632771  (created 2026-08-21 15:30 UTC)  publickey d7a5ba304535751969f48bdad71bc3dd2c5f8878991b66ee8bbe26634d9b1ef3  GroupId f6cd1e85-0691-4ec6-bb55-13ed5850d7fa
+FleetTemplate syn-prd-ava-unattended ; host devices-iot.console.gotoresolve.com (legitimate vendor infra - hunt by CompanyId, do not block globally)
+
+## URLs
+https://bionicava.sbs/admin/DOCUMENTS_PACKAGE(67174).zip
+https://bionicava.sbs/dhl/docunewvv.zip
+https://bionicava.sbs/dp/dpack_fresh.zip
+https://bionicava.sbs/dp/dpack_fresh/dpack/rel/
+https://bionicava.sbs/abcdefjhijklmno/apps.html
+
+## SHA-256
+ceca31796127421d32e8dfecec157c6801426b462e2aafdbab886d28e62b7c67  DOCUMENTS_PACKAGE(67174).zip
+1b0633dde06e40366c4946ba121de20cc5c7a9261d3539e40c089483b4404c03  DHL_SHIPPING_DOCUMENTS(67173).zip
+a3d321f705bbd799fba1292741831ff9b49863918256a2ace5edaf126aad8c0b  docunewvv.zip
+8f10de3efb5caf8596e8f6943456517e43a9dd97dcbb32151c1620165364753c  dpack_fresh.zip
+7db12fbf2c7a985fa73aca0aa28fffb4796d5e043460fd760445c7570482d8ed  LogMeInResolve_Unattended.msi (Oct)
+512d5003ddda353de8740fbb0868d627a2562b5e281b036128a895c6ac1644aa  LogMeInResolve_Unattended.msi (Aug)
+1e0bc3cab7b9207ec929857870027cd5c740e437173b9ebd6955d539c66a0fb5  unattended-updater.exe (Oct)
+5164ce6cea49ef2d68b448b9c0872869fd931e5ea4f63a1d633c2c028a19c65c  unattended-updater.exe (Aug)
+7944ed8753971f952130ea0c52a0ee9d7cef42f33b176234b08ab7f97a2cd262  setup.vbs
+84fcaf527ac7240f8f5735c4ca245ef5d40beb41d8d63036cdfd0a4bc4272a0e  launcher .vbs (MD5 de954e745e55dd3bbb81844ff47128aa)
+
+## Anti-analysis
+JS blocks visitor IPs 162.158.63.160-162 (via api.ipify.org) ; mobile UAs redirected ; homeslifestylewaglin.sbs / answers 302 to href.li?https://example.com
