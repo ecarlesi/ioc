@@ -9,6 +9,14 @@ mobile-de.bewertung-710016253.com  (panel/C2 in config.js; NXDOMAIN 2026-11-03)
 bewertung-710016253.com            (NXDOMAIN 2026-11-03)
 188.114.96.7 188.114.97.7 2a06:98c1:3120::7 2a06:98c1:3121::7  (Cloudflare, delivery host)
 
+## Same campaign (urlscan.io search hash:35ff433b7d75120f142d9355a62ee46b0c75fbebcf3f501e2d094d0fd1292839, 2026-11-03; 10 scans, all malicious / brand mobile.de)
+kundendienst-mobile.de   185.208.156.66 (AS42624)  scans 2025-12-11; SERVFAIL 2026-11-03
+angebote.mobile          66.29.148.193 (AS22612)   scans 2026-10-07; NXDOMAIN
+bewertungen.mobile       66.29.148.126 (AS22612)   scans 2026-10-13; NXDOMAIN
+ansprechpartner.mobile   66.29.148.196 (AS22612)   scans 2026-10-30; NXDOMAIN (new, not in earlier reports)
+Same kit as the 2026-10-13 analysis (only config.js, panel/config/config.php and a few files differ). Bots: @mierecucacat_bot 8936816400 (Oct kit), @mierecunuca_bot 8378777483 (this kit).
+Old token of bot 8378777483 (kundendienst-mobile.de, 2025-12-11): 8378777483:AAGsvR6jLXyFYBbQC3TYYZcTzur38og6H4s -> REVOKED (getMe 401, 2026-11-03)
+
 ## Telegram (checked 2026-11-03 21:38 UTC: LIVE, getMe 200, no webhook, pending_update_count 0, getUpdates empty)
 bot token: 8378777483:AAHGX8Rt3fKlt_rkJQZCUiW0OO97I66bYOg
 bot username: @mierecunuca_bot (first_name MIERE), bot id 8378777483

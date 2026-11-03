@@ -59,3 +59,7 @@ https://chancegagne.xyz/bnp/admin_panel.php,chancegagne.xyz-be-banks-phish
 https://id52465641803002.mobile/tuttobene.zip,id52465641803002.mobile-mobilede-phish
 https://mobile-de.bewertung-710016253.com/panel/,id52465641803002.mobile-mobilede-phish
 https://mobile-de.bewertung-710016253.com/panel/auth.php,id52465641803002.mobile-mobilede-phish
+https://ansprechpartner.mobile/bewertungen/,id52465641803002.mobile-mobilede-phish
+https://bewertungen.mobile/ansprechpartner/,id52465641803002.mobile-mobilede-phish
+https://angebote.mobile/4436963907/,id52465641803002.mobile-mobilede-phish
+https://kundendienst-mobile.de/bewertungen/showTotal%3Dtrue/,id52465641803002.mobile-mobilede-phish
