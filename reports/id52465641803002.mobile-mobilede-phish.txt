@@ -9,8 +9,9 @@ mobile-de.bewertung-710016253.com  (panel/C2 in config.js; NXDOMAIN 2026-11-03)
 bewertung-710016253.com            (NXDOMAIN 2026-11-03)
 188.114.96.7 188.114.97.7 2a06:98c1:3120::7 2a06:98c1:3121::7  (Cloudflare, delivery host)
 
-## Telegram (not live-checked)
+## Telegram (checked 2026-11-03 21:38 UTC: LIVE, getMe 200, no webhook, pending_update_count 0, getUpdates empty)
 bot token: 8378777483:AAHGX8Rt3fKlt_rkJQZCUiW0OO97I66bYOg
+bot username: @mierecunuca_bot (first_name MIERE), bot id 8378777483
 chat id:   7952273504
 
 ## Panel / config secrets
