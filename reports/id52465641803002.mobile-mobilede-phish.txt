@@ -1,0 +1,31 @@
+# id52465641803002.mobile - mobile.de dealer-login (Haendler-Login) phishing kit, tuttobene.zip (2026-11-03)
+
+Kit with a German mobile.de fake login + SMS-TAN relay (front-end idhandel2login/) and a PHP operator panel "Phishing  Panel" (tuttobene/).
+Every captured value is sent to the panel and to Telegram. No victim data in the archive. Static analysis only.
+
+## Domains / IP
+id52465641803002.mobile  (registered 2026-11-02 08:27 UTC, Spaceship; Cloudflare NS vicente/romina; serves tuttobene.zip, plain GET -> 403 on 2026-11-03)
+mobile-de.bewertung-710016253.com  (panel/C2 in config.js; NXDOMAIN 2026-11-03)
+bewertung-710016253.com            (NXDOMAIN 2026-11-03)
+188.114.96.7 188.114.97.7 2a06:98c1:3120::7 2a06:98c1:3121::7  (Cloudflare, delivery host)
+
+## Telegram (not live-checked)
+bot token: 8378777483:AAHGX8Rt3fKlt_rkJQZCUiW0OO97I66bYOg
+chat id:   7952273504
+
+## Panel / config secrets
+tuttobene/config.php         yvhvhpyt_mobuser / X5z[tdr$;-6~g2#5 / yvhvhpyt_mob1
+tuttobene/config/config.php  a2ha46159359_user / NhL2JT2mZ6! / a2ha46159359_panel
+BD.sql superadmin bcrypt $2y$10$xpZc5KC.aU2XHkcqhuZGFuAnqmtL4Unt8MysOyylceq.19XIyoZpG (email super@dddd.rr, placeholder)
+
+## SHA-256
+0fe6702324fd514045fdc8c69d850d4545caa60f8b74e70cddec8aa8bd941d3f  tuttobene.zip
+35ff433b7d75120f142d9355a62ee46b0c75fbebcf3f501e2d094d0fd1292839  idhandel2login/webpack/total.lib.js
+9ee8dd7fbdf14cd27a7c7f21086bf3f1d55a22f4e3b6d41cae76f842a5b840f2  idhandel2login/config/config.js
+9eec2c503b5fd462eb8a63ad4b4a7460e7de7da287139056fa43fb2a4ca49db8  idhandel2login/index.html
+08c46d641bc667d75e7b49615c9655d36d580522d72674c168f4aa6b4426c1de  tuttobene/auth.php
+77e4511ed176f9168a38710fbdf4007a901488bfadf8f438d9f97acd642d89a2  tuttobene/BD.sql
+
+## Paths
+/panel/auth.php?operation=create /panel/authupd.php?operation=update /panel/control.php?operation=update /panel/online.php?state=workstate&auth=<id> /panel/live.php?state=workstate&auth=<id>
+script id ak47loader ; folders idhandel2login/ tuttobene/ ; panel title "Phishing  Panel"
