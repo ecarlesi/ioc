@@ -279,3 +279,5 @@ yba.boss@aol.com,https://viewaccountbalances.com/Dow%20Credit%20Union.zip
 yba.boss@aol.com,https://tempaccountbalance.org/Focus%20FCU.zip
 yba.boss@aol.com,https://tempaccountbalance.org/Mycommunity%20CU.zip
 yba.boss@aol.com,https://tempaccountbalance.org/Tech%20CU%20New.zip
+yba.boss@aol.com,https://tempviewaccount.biz/Mycommunity%20CU.zip
+yba.boss@aol.com,https://tempviewaccount.biz/Tech%20CU%20New.zip
