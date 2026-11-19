@@ -8,3 +8,4 @@ If you want to contribute, of course, you are welcome.
 
 The kits listed are all available in the Matrix storage. If you are a researcher and need any of these kits for analysis you can write to me and I will send you the instructions to download it.
 
+[Graph of Indicators](https://ecarlesi.github.io/ioc/)
