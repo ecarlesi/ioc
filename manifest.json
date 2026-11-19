@@ -33,6 +33,10 @@
       "name": "ipinfo"
     },
     {
+      "file": "killbot.txt",
+      "name": "killbot"
+    },
+    {
       "file": "moonito.txt",
       "name": "moonito"
     },
